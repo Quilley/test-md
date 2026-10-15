@@ -1,5 +1,0 @@
-interface:
-  display_name: "Grill with Docs"
-  short_description: "Develop a plan and preserve decisions and evidence"
-policy:
-  allow_implicit_invocation: false

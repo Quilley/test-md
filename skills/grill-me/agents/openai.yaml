@@ -1,0 +1,5 @@
+interface:
+  display_name: "Grill Me"
+  short_description: "Challenge assumptions and develop a better plan"
+policy:
+  allow_implicit_invocation: false

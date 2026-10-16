@@ -1,0 +1,324 @@
+#!/usr/bin/env python3
+"""recap - the deterministic half of the recap skill. Run it from inside the project.
+
+recap setup                      give the project a book in the journals clone
+recap status                     the book, what is new since it was last written, and the model settings
+recap sessions [--since ISO]     Claude Code and Codex sessions with talk since the book was last written
+recap read <id>... [--since ISO] [--part N]
+                                 one session's talk: each of Souvik's messages and the reply it got, nothing stored
+recap commit <message>           move Covered through to now, commit the book as Roy, push
+recap retire                     delete the old build-journal files from the folder and the journal.* git config
+
+RECAP_HOME (journals clone), RECAP_PUSH=0 (commit without pushing), RECAP_PART (characters per read part),
+RECAP_READ_MODEL and RECAP_WRITE_MODEL (model defaults, shown by status).
+"""
+import fcntl, json, os, re, subprocess, sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+HOME = Path.home()
+J = Path(os.environ.get("RECAP_HOME", HOME / "Documents/GitHub/journals"))
+REMOTE = os.environ.get("RECAP_REMOTE", "https://github.com/Quilley/journals.git")
+PUSH = os.environ.get("RECAP_PUSH", "1") != "0"
+PART = int(os.environ.get("RECAP_PART", "25000"))   # stays under Claude Code's Bash output cap
+REPLY_CAP = 6000
+HDR = "> Recap: the story of how the thinking on this project evolved. History, not a source of truth for the code. Keep it out of coding work."
+SKIP = ("This session is being continued", "[Request interrupted", "Caveat:", "# AGENTS.md instructions", "<environment_context")
+OLD = ("journal.md", "mine.md", "questions.md", "feedback.md")   # build-journal's files
+
+
+def die(msg):
+    print(f"recap: {msg}", file=sys.stderr)
+    sys.exit(1)
+
+
+def run(*args, cwd=None, check=True):
+    r = subprocess.run(list(args), cwd=cwd, capture_output=True, text=True)
+    if check and r.returncode:
+        die(f"{' '.join(args)}: {r.stderr.strip()}")
+    return r.stdout.strip()
+
+
+def git(*args, cwd=None, check=True):
+    return run("git", *args, cwd=cwd or ROOT, check=check)
+
+
+def read(p):
+    try:
+        return Path(p).read_text()
+    except FileNotFoundError:
+        return ""
+
+
+ROOT = run("git", "rev-parse", "--show-toplevel", check=False) or die("run inside a git project")
+NAME = git("config", "--get", "recap.folder", check=False) or git("config", "--get", "journal.folder", check=False)
+F = J / NAME if NAME else Path()
+BOOK = F / "recap.md"
+
+
+def need():
+    if not NAME or not BOOK.exists():
+        die("no book for this project; run recap setup")
+
+
+def covered():  # ISO UTC stamp the book was last written through, "" for never
+    m = re.search(r"^Covered through: (\S+)", read(BOOK), re.M)
+    return "" if not m or m.group(1) == "none" else m.group(1)
+
+
+def now():
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def local(stamp):
+    try:
+        return datetime.strptime(stamp[:19], "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc).astimezone().strftime("%Y-%m-%d %H:%M")
+    except ValueError:
+        return stamp[:16]
+
+
+# --- transcripts ---------------------------------------------------------------------------
+
+def common_dir(cwd):
+    return run("git", "rev-parse", "--path-format=absolute", "--git-common-dir", cwd=cwd, check=False)
+
+
+def claude_files():
+    common = common_dir(ROOT)
+    main = os.path.dirname(common) if common.endswith("/.git") else ROOT
+    # ponytail: prefix match also takes worktrees beside the project; a sibling repo sharing the prefix would leak in.
+    pre = re.sub(r"[^A-Za-z0-9]", "-", main).lower()
+    d = HOME / ".claude/projects"
+    return [f for p in d.iterdir() if p.is_dir() and p.name.lower().startswith(pre) for f in p.glob("*.jsonl")] if d.is_dir() else []
+
+
+def codex_files(since):  # a Codex session belongs here when its working directory is a checkout or worktree of the project
+    out, seen, common = [], {}, common_dir(ROOT)
+    floor = datetime.strptime(since[:19], "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc).timestamp() if since else 0
+    for f in (HOME / ".codex/sessions").glob("*/*/*/rollout-*.jsonl"):
+        if f.stat().st_mtime < floor:
+            continue
+        try:
+            meta = json.loads(open(f, errors="replace").readline()).get("payload", {})
+        except ValueError:
+            continue
+        cwd = meta.get("cwd") or ""
+        if isinstance(meta.get("source"), dict) or not cwd:   # subagent and guardian threads are not him
+            continue
+        if cwd not in seen:
+            seen[cwd] = bool(common) and os.path.isdir(cwd) and common_dir(cwd) == common
+        if seen[cwd]:
+            out.append(f)
+    return out
+
+
+def text_of(c):
+    if isinstance(c, str):
+        return c
+    return "\n".join(x.get("text", "") for x in (c or []) if isinstance(x, dict) and x.get("type") in ("text", "input_text", "output_text"))
+
+
+def human(t):  # his typed text, or "" for harness noise. A slash command keeps its name and arguments.
+    t = re.sub(r"<system-reminder>.*?</system-reminder>", "", t, flags=re.S).strip()
+    if t.startswith("# Files pasted by the user"):   # Codex puts attachments before his text
+        t = t.partition("## My request:")[2].strip()
+    if t.startswith("<command-name>") or t.startswith("<command-message>"):
+        name = re.search(r"<command-name>(.*?)</command-name>", t, re.S)
+        args = re.search(r"<command-args>(.*?)</command-args>", t, re.S)
+        args = args.group(1).strip() if args else ""
+        return f"{name.group(1).strip() if name else ''} {args}" if args else ""   # a bare /model or /clear says nothing
+    if not t or t.startswith("<") or t.startswith(SKIP):
+        return ""
+    return t
+
+
+def turns(f):
+    """(stamp, tool, session, his message, the last prose reply it got) for one transcript, in order."""
+    tool = "codex" if f.name.startswith("rollout-") else "claude"
+    sid = f.stem[-8:] if tool == "codex" else f.stem[:8]   # Codex ids are time-ordered, so their tails differ
+    cur = None
+    for line in open(f, errors="replace"):
+        try:
+            e = json.loads(line)
+        except ValueError:
+            continue
+        if tool == "claude":
+            if e.get("isSidechain") or e.get("isMeta"):
+                continue
+            role, content = e.get("type"), (e.get("message") or {}).get("content")
+        else:
+            p = e.get("payload") or {}
+            if e.get("type") != "response_item" or p.get("type") != "message":
+                continue
+            role, content = p.get("role"), p.get("content")
+        if role == "user":
+            t = human(text_of(content))
+            if t:
+                if cur:
+                    yield cur
+                cur = [e.get("timestamp", ""), tool, sid, t, ""]
+        elif role == "assistant" and cur:
+            t = text_of(content).strip()
+            if t:
+                cur[4] = t   # keep the last prose before his next message: the answer, not the narration on the way
+    if cur:
+        yield cur
+
+
+def sessions(since):
+    got = {}
+    for f in claude_files() + codex_files(since):
+        for t in turns(f):
+            if t[0][:19] > since[:19]:
+                got.setdefault((t[1], t[2]), []).append(t)
+    return got
+
+
+def render(t):
+    reply = t[4] if len(t[4]) <= REPLY_CAP else t[4][:REPLY_CAP] + " [reply cut]"
+    return f"\n## {local(t[0])} · {t[1]} {t[2]}\nSouvik: {t[3]}\n" + (f"\nReply: {reply}\n" if reply else "")
+
+
+# --- commands ------------------------------------------------------------------------------
+
+def flag(args, name, default=""):
+    if name in args:
+        i = args.index(name)
+        v = (args[i + 1:i + 2] or die(f"{name} needs a value"))[0]
+        del args[i:i + 2]
+        return v
+    return default
+
+
+def cmd_sessions(args):
+    since = flag(args, "--since", covered())
+    rows = sorted(((v[0][0], k, v) for k, v in sessions(since).items()))
+    total = 0
+    for first, (tool, sid), v in rows:
+        size = sum(len(render(t)) for t in v)
+        total += size
+        print(f"{sid} {tool:6} {local(first)} to {local(v[-1][0])}  {len(v):3} messages  ~{size // 4000 + 1}k tokens")
+    print(f"{len(rows)} sessions since {since or 'the start'}, ~{total // 4000}k tokens of talk")
+
+
+def cmd_read(args):
+    since, part = flag(args, "--since", covered()), int(flag(args, "--part", "1"))
+    args or die("usage: recap read <session id>... [--since ISO] [--part N]")
+    got = sessions(since)
+    text = ""
+    for want in args:
+        hit = [k for k in got if k[1].startswith(want)] or die(f"no session {want} with talk since {since or 'the start'}")
+        for k in hit:
+            text += "".join(render(t) for t in got[k])
+    parts = max(1, -(-len(text) // PART))
+    print(text[(part - 1) * PART:part * PART])
+    if parts > 1:
+        print(f"\n[part {part} of {parts}" + (f"; next: recap read {' '.join(args)} --part {part + 1}" if part < parts else "") + "]")
+
+
+def cmd_status(_):
+    need()
+    since = covered()
+    rows = sessions(since)
+    size = sum(len(render(t)) for v in rows.values() for t in v)
+    log = git("log", "--oneline", *([f"--since={since}"] if since else [])).splitlines()
+    print(f"book:            {BOOK}")
+    print(f"covered through: {since or 'none, this is the first run'}")
+    print(f"new since:       {len(rows)} sessions (~{size // 4000}k tokens of talk), {len(log)} commits")
+    old = [str(p.relative_to(F)) for p in F.rglob("*.md") if p.name in OLD]
+    if old:
+        print(f"old journal:     {', '.join(sorted(old))}")
+    print(f"read model:      {os.environ.get('RECAP_READ_MODEL') or 'unset (reader picks)'}")
+    print(f"write model:     {os.environ.get('RECAP_WRITE_MODEL') or 'unset (this session writes)'}")
+
+
+def lock():  # every project shares the clone; held until the process exits
+    (J / ".git").exists() or die(f"no journals clone at {J}")
+    fd = os.open(J / ".git" / "recap.lock", os.O_CREAT | os.O_RDWR)
+    fcntl.flock(fd, fcntl.LOCK_EX)
+
+
+def push():
+    def once():
+        return subprocess.run(["git", "push", "-q", "origin", "HEAD:main"], cwd=J, capture_output=True, text=True)
+    r = once()
+    if r.returncode:   # the remote moved (another machine): replay ours on top
+        subprocess.run(["git", "fetch", "-q", "origin"], cwd=J, capture_output=True)
+        if subprocess.run(["git", "rebase", "-q", "origin/main"], cwd=J, capture_output=True).returncode:
+            subprocess.run(["git", "rebase", "--abort"], cwd=J, capture_output=True)
+        r = once()
+    print("pushed" if r.returncode == 0 else f"push failed, the commit stays local: {r.stderr.strip()}")
+
+
+def commit(msg, paths):
+    lock()
+    git("add", "-A", "--", *paths, cwd=J)
+    if subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=J).returncode == 0:
+        print("nothing to commit")
+        return
+    env = dict(os.environ, GIT_AUTHOR_NAME="Roy", GIT_COMMITTER_NAME="Roy")   # the global git email stays in force
+    subprocess.run(["git", "commit", "-q", "-m", msg], cwd=J, env=env, check=True)
+    print(f"committed: {msg}")
+    if PUSH:
+        push()
+
+
+def cmd_commit(args):
+    need()
+    args or die("usage: recap commit <message>")
+    BOOK.write_text(re.sub(r"^Covered through:.*$", f"Covered through: {now()}", read(BOOK), count=1, flags=re.M))
+    commit(" ".join(args), [NAME])
+
+
+def cmd_setup(_):
+    global NAME, F, BOOK
+    if not (J / ".git").exists():
+        J.parent.mkdir(parents=True, exist_ok=True)
+        r = subprocess.run(["git", "clone", "-q", REMOTE, str(J)], capture_output=True, text=True)
+        if r.returncode:
+            die(f"could not clone {REMOTE}: {r.stderr.strip()}")
+    url = git("config", "--get", "remote.origin.url", check=False)
+    src = re.sub(r"\.git$", "", re.sub(r"^git@([^:]+):", r"https://\1/", re.sub(r"(https?://)[^/@]*@", r"\1", url))) if url else f"local:{ROOT}"
+    if not NAME:
+        NAME = os.path.basename(src.rstrip("/"))
+        theirs = re.search(r"^Source: (.*)$", read(J / NAME / "recap.md"), re.M)
+        if theirs and theirs.group(1).strip() != src:   # another project with the same repo name owns the folder
+            NAME = f"{src.rstrip('/').split('/')[-2].split(':')[-1]}-{NAME}"
+    git("config", "--local", "recap.folder", NAME)
+    F, BOOK = J / NAME, J / NAME / "recap.md"
+    F.mkdir(parents=True, exist_ok=True)
+    if not BOOK.exists():
+        BOOK.write_text(f"{HDR}\n\nSource: {src}\nCovered through: none\n")
+        commit(f"recap: start {NAME}", [NAME])
+    print(f"book: {BOOK}")
+    clean = "recap" not in git("status", "--porcelain")
+    print(f"{'check' if clean else 'FAIL'}: nothing recap-related in the project's git status")
+    sys.exit(0 if clean else 1)
+
+
+def cmd_retire(_):
+    need()
+    gone = [p for p in F.rglob("*.md") if p.name in OLD]
+    for p in gone:
+        p.unlink()
+    for d in sorted((d for d in F.rglob("*") if d.is_dir()), key=lambda d: -len(d.parts)):
+        if not any(d.iterdir()):
+            d.rmdir()
+    git("config", "--local", "--unset", "journal.folder", check=False)
+    git("config", "--local", "--unset-all", "journal.scope", check=False)
+    print(f"removed {len(gone)} old journal files; git history in {J} keeps them")
+    commit(f"recap: retire the old journal of {NAME}", [NAME])
+
+
+def main():
+    argv = sys.argv[1:]
+    cmds = {"setup": cmd_setup, "status": cmd_status, "sessions": cmd_sessions, "read": cmd_read,
+            "commit": cmd_commit, "retire": cmd_retire}
+    if not argv or argv[0] not in cmds:
+        print(__doc__.strip())
+        sys.exit(1)
+    cmds[argv[0]](argv[1:])
+
+
+if __name__ == "__main__":
+    main()

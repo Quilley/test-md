@@ -1,0 +1,4 @@
+interface:
+  display_name: "Souvik"
+  short_description: "Write in Souvik's voice for any setting"
+  default_prompt: "Use @souvik to write or revise this in my voice."

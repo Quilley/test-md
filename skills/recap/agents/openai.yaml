@@ -1,0 +1,5 @@
+interface:
+  display_name: "Recap"
+  short_description: "Grow a project's story of how the thinking evolved and why"
+policy:
+  allow_implicit_invocation: false

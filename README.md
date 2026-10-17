@@ -20,6 +20,8 @@ This repository packages a set of collaborative planning skills for Claude Code,
 | `tdd` | Red-green loop at the seams the spec agreed. |
 | `code-review` | Review a diff against the repo's standards and against the spec's IDs. |
 | `codebase-design` | Shared vocabulary for module depth and seams. Consulted by `tdd`. |
+| `expert` | Add expert-level rigor to a specific task without changing its scope. |
+| `recap` | Grow a project's story in Souvik's voice from everything since the last recap. Manual only. |
 | `setup-matt-pocock-skills` | Configure the issue tracker, triage labels, and doc layout. Required by `to-spec`, `to-tickets`, `implement-spec`, `code-review`, and `wayfinder`. |
 
 Grilling numbers its decisions (D1, D2, ...) and asks them through the harness's question picker; `to-spec` keeps those numbers and `to-tickets` checks every one is covered. `implement-spec` stops a ticket rather than guessing when it hits an open item or a decision it cannot meet, records the answer in the spec, and `code-review` reports findings by ID. Without a configured issue tracker, `setup-matt-pocock-skills/issue-tracker-local.md` defines a local Markdown tracker. The `grilling/turn-reminder.sh` hook is optional; it uses `sh` and `jq`, requires a Claude Code `UserPromptSubmit` hook, and the skills work without it.
@@ -35,7 +37,7 @@ skills_dir="$claude_home/skills"
 backup="$claude_home/skill-backups/planning-$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$skills_dir" "$claude_home/skill-backups"
 mkdir "$backup"
-names="grilling grill-me grill-with-docs wayfinder research prototype domain-modeling to-spec to-tickets implement implement-spec tdd code-review codebase-design setup-matt-pocock-skills"
+names="grilling grill-me grill-with-docs wayfinder research prototype domain-modeling to-spec to-tickets implement implement-spec tdd code-review codebase-design expert recap setup-matt-pocock-skills"
 for name in $names; do
   current="$skills_dir/$name"
   if [ -e "$current" ] || [ -L "$current" ]; then

@@ -67,7 +67,7 @@ Each smell reads *what it is* → *how to fix*; match it against the diff:
 
 - The diff command and commit list.
 - The path or fetched contents of the spec.
-- The brief: "Report: (a) requirements the spec asked for that are missing or partial; (b) behaviour in the diff that wasn't asked for (scope creep); (c) requirements that look implemented but where the implementation looks wrong. Quote the spec line for each finding. When the spec numbers its items (US1, D1, ...), cite the ID, and flag code that treats an item still open in its Carried Forward section as settled. Under 400 words."
+- The brief: "Report: (a) requirements the spec asked for that are missing or partial; (b) behaviour in the diff that wasn't asked for (scope creep); (c) requirements that look implemented but where the implementation looks wrong. Quote the spec line for each finding. When the spec numbers its items (US1, D1, ...), cite the ID and its name, and flag code that treats an item still open in its Carried Forward section as settled. Under 400 words."
 
 If the spec is missing, skip the Spec sub-agent and note this in the final report.
 

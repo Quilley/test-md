@@ -27,12 +27,12 @@ Communication to and from subagents should be sparse. Communicate primarily thro
 4. Use **implementer subagents** to implement each ticket, each in its own worktree on its own branch. Each implementer subagent:
    - confirms its worktree is based on the integration branch before starting, and resets onto it if not;
    - calls the Skill tool with `tdd` to build the ticket, treating the seams named in the spec's Testing Decisions as confirmed;
-   - stops and reports the ID, rather than choosing, when the ticket depends on an item still open in the spec's Carried Forward or cannot meet a user story or decision as written;
+   - stops and reports the ID and the conflict in plain words, rather than choosing, when the ticket depends on an item still open in the spec's Carried Forward or cannot meet a user story or decision as written;
    - merges the integration branch tip into its own branch before reporting done
 
 5. Once an **implementer subagent** completes, merge its work to the integration branch with a **merger subagent**. The merger runs the test suite after merging and sends a failing ticket back to its implementer rather than leaving the integration branch red. A merged ticket counts as done for the frontier; unless the tracker closes work through the PR, resolve it now.
 
-   If an implementer stopped on a question, take it to the user. Record the answer in the spec, as a new decision or a settled Carried Forward item, before rerunning that ticket. The rest of the frontier carries on meanwhile.
+   If an implementer stopped on a question, take it to the user as a [grilling](../grilling/SKILL.md) decision card. Record the answer in the spec, as a new decision or a settled Carried Forward item, before rerunning that ticket. The rest of the frontier carries on meanwhile.
 
 6. If this changes the **frontier** of available tickets, kick off more **implementer subagents** to work on the new tickets. This allows for maximum concurrency.
 
@@ -40,6 +40,6 @@ Communication to and from subagents should be sparse. Communicate primarily thro
 
 8. List the spec's decisions that meet the bar in [When to offer an ADR](../domain-modeling/ADR-FORMAT.md) and offer to record them, so the reasons outlive the spec.
 
-9. If a draft PR exists, mark it ready for review. Otherwise, report the integration branch. Either way, list the Carried Forward items still awaiting the user's confirmation.
+9. If a draft PR exists, mark it ready for review. Otherwise, report the integration branch. Either way, list the Carried Forward items still awaiting the user's confirmation, each in plain words with its ID.
 
 10. Clean up all **implementer subagent** worktrees.

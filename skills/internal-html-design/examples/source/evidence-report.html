@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Which change clears the queue?</title>
+  <!-- ihd:styles -->
+</head>
+<body>
+  <a class="ihd-skip" href="#content">Skip to content</a>
+  <div class="ihd-page">
+    <header class="ihd-masthead"><span class="ihd-mark">Decision notes / 02</span><button type="button" data-ihd-theme-toggle aria-pressed="false" hidden>Dark appearance</button></header>
+    <main id="content">
+      <header class="ihd-hero">
+        <p class="ihd-eyebrow">Evidence report · constructed example</p>
+        <h1>Which change<br>clears the queue?</h1>
+        <p class="ihd-deck">Compare an equipment upgrade with a second handoff position. Both change capacity. Only one changes the limit in this model.</p>
+        <div class="ihd-meta"><span>Status: model comparison</span><span>Decision: provisional</span><span>No field measurements</span></div>
+      </header>
+      <div class="ihd-note ihd-note--warning"><p><strong>Evidence boundary.</strong> Every rate below is an invented input. The recommendation follows from those inputs; it is not a finding about an actual café.</p></div>
+      <section class="ihd-section" aria-labelledby="comparison">
+        <div class="ihd-section-heading"><span class="ihd-section-number">01</span><h2 id="comparison">Two interventions, one constraint.</h2></div>
+        <div class="ihd-split">
+          <article class="ihd-panel" aria-labelledby="option-a">
+            <span class="ihd-status">A · equipment upgrade</span>
+            <h3 id="option-a" style="margin-top:1.5rem">Make drinks faster.</h3>
+            <div class="ihd-bar-row"><span>Machine</span><div class="ihd-track"><div class="ihd-bar ihd-bar--muted" style="width:100%"></div></div><span>12 / min</span></div>
+            <div class="ihd-bar-row"><span>Handoff</span><div class="ihd-track"><div class="ihd-bar" style="width:33.333%"></div></div><span>4 / min</span></div>
+            <p class="ihd-result">Queue grows.</p>
+            <p class="ihd-small">Six orders arrive, four leave. Unfinished work grows by two orders per minute.</p>
+          </article>
+          <article class="ihd-panel ihd-panel--tint" aria-labelledby="option-b">
+            <span class="ihd-status ihd-status--accent">B · worth testing first</span>
+            <h3 id="option-b" style="margin-top:1.5rem">Expand the handoff.</h3>
+            <div class="ihd-bar-row"><span>Machine</span><div class="ihd-track"><div class="ihd-bar ihd-bar--muted" style="width:66.667%"></div></div><span>8 / min</span></div>
+            <div class="ihd-bar-row"><span>Handoff</span><div class="ihd-track"><div class="ihd-bar" style="width:66.667%"></div></div><span>8 / min</span></div>
+            <p class="ihd-result">Capacity exceeds arrivals.</p>
+            <p class="ihd-small">The path can handle eight orders a minute. At six arrivals per minute, the model has two orders per minute of spare capacity.</p>
+          </article>
+        </div>
+      </section>
+      <section class="ihd-section" aria-labelledby="model-inputs">
+        <div class="ihd-section-heading"><span class="ihd-section-number">02</span><h2 id="model-inputs">Keep inputs beside the inference.</h2></div>
+        <div class="ihd-table-wrap" role="region" aria-label="Capacity comparison" tabindex="0">
+          <table>
+            <caption>All rates are orders or drinks per minute. Constant rates, no lost work, and independent handoff capacity are assumed.</caption>
+            <thead><tr><th scope="col">Model quantity</th><th scope="col">Current</th><th scope="col">A</th><th scope="col">B</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Arrivals</th><td>6</td><td>6</td><td>6</td></tr>
+              <tr><th scope="row">Machine capacity</th><td>8</td><td>12</td><td>8</td></tr>
+              <tr><th scope="row">Handoff capacity</th><td>4</td><td>4</td><td>8</td></tr>
+              <tr><th scope="row">Path capacity<sup><a href="#model-rule" aria-label="Model rule 1">1</a></sup></th><td>4</td><td>4</td><td>8</td></tr>
+              <tr><th scope="row">Unfinished work</th><td>Grows</td><td>Grows</td><td>Can clear</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="ihd-section ihd-reading" aria-labelledby="recommendation">
+        <h2 id="recommendation">Test the handoff assumption.</h2>
+        <p>The second handoff position is worth exploring first because it changes the slowest step. The machine upgrade leaves that step untouched.</p>
+        <p>The fragile assumption is that a second position doubles handoff capacity. Shared counter space or one person fetching every drink could prevent that. Before treating option B as a plan, measure whether the two positions can operate independently.</p>
+        <p>This comparison says nothing about staffing cost or customer waiting times. Those need observations the model does not contain.</p>
+        <aside class="ihd-footnotes" aria-label="Model note"><p id="model-rule"><strong>1.</strong> In this simplified serial path, sustained path capacity is the smaller of machine capacity and handoff capacity. It is a modeling rule, not an external source or an empirical estimate.</p></aside>
+      </section>
+    </main>
+    <footer class="ihd-footer"><span>Design specimen</span><span>Evidence report / Internal HTML Design</span></footer>
+  </div>
+  <!-- ihd:reader -->
+</body>
+</html>

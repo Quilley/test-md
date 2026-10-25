@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Follow one order</title>
+  <!-- ihd:styles -->
+</head>
+<body>
+  <a class="ihd-skip" href="#content">Skip to content</a>
+  <div class="ihd-page">
+    <header class="ihd-masthead"><span class="ihd-mark">Mechanism notes / 03</span><button type="button" data-ihd-theme-toggle aria-pressed="false" hidden>Dark appearance</button></header>
+    <main id="content">
+      <header class="ihd-hero">
+        <p class="ihd-eyebrow">Guided explainer</p>
+        <h1>Follow one order.</h1>
+        <p class="ihd-deck">The café has spare machine capacity. A queue still grows. Follow the work to see why.</p>
+        <div class="ihd-meta"><span>Read continuously or choose guided steps</span><span>Illustrative model</span></div>
+      </header>
+      <section data-ihd-steps aria-label="Follow the order through three steps">
+        <div class="ihd-controls" data-ihd-step-controls hidden>
+          <button type="button" data-ihd-step-toggle aria-pressed="false">Guide me</button>
+          <div class="ihd-step-nav" data-ihd-step-nav hidden>
+            <button type="button" data-ihd-previous>Previous</button>
+            <span class="ihd-step-status" data-ihd-step-status role="status" aria-live="polite"></span>
+            <button type="button" data-ihd-next>Next</button>
+          </div>
+        </div>
+        <section class="ihd-panel" data-ihd-step aria-labelledby="arrive">
+          <p class="ihd-eyebrow">01 · arrival</p><h2 id="arrive">An order enters the system.</h2>
+          <div class="ihd-split">
+            <div><p>Six orders arrive each minute in our simplified model. The queue contains unfinished commitments to customers, wherever those commitments are stored.</p><p class="ihd-small">Assume a steady arrival rate. We are not modeling bursts or individual customer waiting times.</p></div>
+            <figure class="ihd-panel--tint" style="padding:1.5rem;border-radius:var(--ihd-radius)">
+              <p class="ihd-figure-title">Incoming work</p>
+              <svg width="250" height="66" viewBox="0 0 250 66" role="img" aria-labelledby="arrivals-title"><title id="arrivals-title">Six order tokens enter per minute.</title><g fill="var(--ihd-accent)"><rect x="0" y="12" width="30" height="40" rx="3"/><rect x="41" y="12" width="30" height="40" rx="3"/><rect x="82" y="12" width="30" height="40" rx="3"/><rect x="123" y="12" width="30" height="40" rx="3"/><rect x="164" y="12" width="30" height="40" rx="3"/><rect x="205" y="12" width="30" height="40" rx="3"/></g></svg>
+              <figcaption>6 orders / minute</figcaption>
+            </figure>
+          </div>
+        </section>
+        <section class="ihd-panel" data-ihd-step aria-labelledby="prepare">
+          <p class="ihd-eyebrow">02 · preparation</p><h2 id="prepare">The machine has room.</h2>
+          <p class="ihd-reading" style="margin-inline:0">The machine can make eight drinks a minute. With six arrivals, it is not the limiting step. Increasing its capacity would not change how many drinks the next step can hand over.</p>
+          <figure style="margin-top:1.5rem"><div class="ihd-bar-row"><span>Arrivals</span><div class="ihd-track"><div class="ihd-bar" style="width:75%"></div></div><span>6 / min</span></div><div class="ihd-bar-row"><span>Machine</span><div class="ihd-track"><div class="ihd-bar ihd-bar--muted" style="width:100%"></div></div><span>8 / min</span></div><figcaption>The machine's capacity exceeds incoming work in this constant-rate example.</figcaption></figure>
+        </section>
+        <section class="ihd-panel" data-ihd-step aria-labelledby="handoff">
+          <p class="ihd-eyebrow">03 · completion</p><h2 id="handoff">The handoff sets the limit.</h2>
+          <p class="ihd-reading" style="margin-inline:0">Only four drinks can reach customers each minute. Six orders enter and four leave, so unfinished work grows by two orders per minute.</p>
+          <div class="ihd-note"><p><strong>The condition:</strong> unfinished work grows when arrivals exceed the path's capacity. The location of that work depends on how the café coordinates its steps.</p></div>
+        </section>
+      </section>
+      <section class="ihd-section" aria-labelledby="experiment">
+        <div class="ihd-section-heading"><span class="ihd-section-number">Try it</span><h2 id="experiment">Change the incoming work.</h2></div>
+        <div class="ihd-split">
+          <div>
+            <p>Keep machine capacity at eight and handoff capacity at four. Change the arrival rate and watch the difference between incoming work and completed orders.</p>
+            <p class="ihd-small">This deterministic model only shows growth pressure on unfinished work. It does not predict average wait or variation. At exact capacity, random bursts could still cause waiting.</p>
+          </div>
+          <div class="ihd-panel ihd-panel--tint">
+            <div data-queue-controls hidden><label for="arrival-rate">Arrivals: <strong><span data-arrival-value>6</span> orders / min</strong></label><input id="arrival-rate" type="range" min="1" max="12" step="1" value="6" aria-describedby="queue-assumptions"></div>
+            <p id="queue-assumptions" class="ihd-small ihd-label">Baseline: 6 arrivals / min; path capacity: 4 / min.</p>
+            <p class="ihd-result" data-queue-result role="status" aria-live="polite">+2 unfinished orders / min</p>
+            <p class="ihd-small ihd-label" data-queue-description>Incoming work exceeds the path's capacity.</p>
+          </div>
+        </div>
+      </section>
+      <section class="ihd-section ihd-reading" aria-labelledby="takeaway"><h2 id="takeaway">Find the step that changes the answer.</h2><p>The faster machine does not remove the limit in this model. Expanding the handoff could. The useful next observation is how the handoff actually works, including anything shared between the people doing it.</p></section>
+    </main>
+    <footer class="ihd-footer"><span>Design specimen</span><span>Guided explanation / Internal HTML Design</span></footer>
+  </div>
+  <!-- ihd:reader -->
+  <script>
+    (() => {
+      const input = document.querySelector('#arrival-rate');
+      input.addEventListener('input', () => {
+        const rate = input.valueAsNumber;
+        const growth = Math.max(0, rate - 4);
+        document.querySelector('[data-arrival-value]').textContent = rate;
+        document.querySelector('[data-queue-result]').textContent = growth ? `+${growth} unfinished orders / min` : `${4 - rate} orders / min spare capacity`;
+        document.querySelector('[data-queue-description]').textContent = growth ? "Incoming work exceeds the path's capacity." : rate === 4 ? 'Arrivals exactly match capacity in this constant-rate model.' : 'The path can keep up under these assumptions.';
+      });
+      document.querySelector('[data-queue-controls]').hidden = false;
+    })();
+  </script>
+</body>
+</html>

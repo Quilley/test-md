@@ -1,0 +1,3 @@
+/* Bundled Source Serif 4 and Libre Franklin, both under the SIL Open Font License (see fonts/OFL-*.txt). */
+@font-face { font-family: 'IHD Source Serif 4'; font-weight: 200 900; font-style: normal; font-display: swap; src: url('fonts/SourceSerif4-Variable.ttf') format('truetype'); }
+@font-face { font-family: 'IHD Libre Franklin'; font-weight: 100 900; font-style: normal; font-display: swap; src: url('fonts/LibreFranklin-Variable.ttf') format('truetype'); }

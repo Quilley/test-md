@@ -1,0 +1,157 @@
+#!/bin/sh
+# Upkeep for this repo's instruction files. Installed by start-repo.
+#   upkeep check        list drift in AGENTS.md and CLAUDE.md files and .claude/rules,
+#                       and planning places plan/AGENTS.md doesn't list; exit 1 if any
+#   upkeep stop [codex] Stop hook: report new drift and new auto-memory corrections,
+#                       once each. Claude Code is the default; "codex" changes the JSON.
+#   upkeep start        SessionStart hook: say when the instructions are due a review
+# Silent when there is nothing to report. Works for Claude Code and Codex.
+
+root=$(git rev-parse --show-toplevel 2>/dev/null) || exit 0
+cd "$root" || exit 0
+common=$(git rev-parse --path-format=absolute --git-common-dir)
+state="$common/agent-upkeep" # untracked record of what was already reported
+
+# seen KEY: true if KEY was reported before, otherwise records it.
+seen() {
+  mkdir -p "$state"
+  grep -qxF "$1" "$state/seen" 2>/dev/null && return 0
+  printf '%s\n' "$1" >>"$state/seen"
+  return 1
+}
+
+check() {
+  git ls-files -co --exclude-standard -- '*AGENTS.md' '*CLAUDE.md' '.claude/rules/*.md' |
+    while IFS= read -r f; do
+      [ -f "$f" ] || continue
+      dir=$(dirname "$f")
+      awk -v f="$f" '/\{\{/ { print f ":" NR ": unfilled placeholder" }' "$f"
+      # A CLAUDE.md next to an AGENTS.md only imports it; anything else in it is
+      # invisible to Codex and the other agents.
+      case $f in *CLAUDE.md) [ -f "$dir/AGENTS.md" ] && awk -v f="$f" '
+        !/^[[:space:]]*$/ && !/^<!--.*-->[[:space:]]*$/ && !/^@AGENTS\.md[[:space:]]*$/ {
+          print f ": has content beyond the @AGENTS.md import; other agents never read it, move it to AGENTS.md"; exit }' "$f" ;; esac
+      # ponytail: paths in backticks only. A missing path counts when it has a
+      # file extension or its first folder still exists, which skips names like
+      # origin/main but also misses a renamed top folder named without a file.
+      grep -o '`[^` ]*/[^` ]*`' "$f" | tr -d '`' | sort -u | while IFS= read -r p; do
+        case $p in */ | /* | '~'* | *://* | *'<'* | *'{'* | *'*'* | *'$'* | *NNNN*) continue ;; esac
+        [ -e "$p" ] || [ -e "$dir/$p" ] && continue
+        first=${p%%/*}
+        case ${p##*/} in
+          *.*) echo "$f: \`$p\` doesn't exist" ;;
+          *) [ -e "$first" ] || [ -e "$dir/$first" ] && echo "$f: \`$p\` doesn't exist" ;;
+        esac
+      done
+    done
+  # ponytail: only the places the engineering skills write to; add a name when
+  # another skill's output turns up unlisted (audit-repo sweeps for the rest).
+  if [ -f plan/AGENTS.md ]; then
+    for loc in .scratch docs/adr CONTEXT.md CONTEXT-MAP.md; do
+      [ -e "$loc" ] && ! grep -qF "$loc" plan/AGENTS.md &&
+        echo "plan/AGENTS.md doesn't list \`$loc\`, which holds planning files"
+    done
+  fi
+}
+
+# Claude's auto-memory folder for this repo (shared by its worktrees).
+# ponytail: mirrors Claude Code's naming as observed; ignores autoMemoryDirectory.
+memdir() {
+  main=$(cd "$common/.." && pwd -P)
+  printf '%s/projects/%s/memory' "${CLAUDE_CONFIG_DIR:-$HOME/.claude}" \
+    "$(printf '%s' "$main" | sed 's/[^A-Za-z0-9-]/-/g')"
+}
+
+# Feedback notes auto memory saved since the last report. The first run, at
+# session start, only records what already exists; audit-repo sweeps those.
+# ponytail: keyed by file name, so a note Claude later rewrites isn't reported again.
+new_corrections() {
+  dir=$(memdir)
+  baseline=
+  [ -f "$state/memory-baseline" ] || baseline=1
+  mkdir -p "$state" && : >"$state/memory-baseline"
+  [ -d "$dir" ] || return 0
+  for f in "$dir"/*.md; do
+    [ -f "$f" ] || continue
+    head -12 "$f" | grep -q '^[[:space:]]*type:[[:space:]]*feedback' || continue
+    if [ -n "$baseline" ]; then seen "memory $f"; continue; fi
+    seen "memory $f" && continue
+    d=$(sed -n 's/^description:[[:space:]]*//p' "$f" | head -1)
+    echo "- ${d:-$(basename "$f")} ($f)"
+  done
+}
+
+json_string() {
+  printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g' | awk 'NR > 1 { printf "\\n" } { printf "%s", $0 }'
+}
+
+stop() {
+  input=$(cat)
+  case $input in *'"stop_hook_active":true'* | *'"stop_hook_active": true'*) return 0 ;; esac
+  msg=
+  drift=$(check)
+  if [ -n "$drift" ] && ! seen "drift $(printf '%s' "$drift" | cksum)"; then
+    msg="These instruction files no longer match the repo:
+$drift
+Fix them with update-repo, or tell the user why not."
+  fi
+  notes=$(new_corrections)
+  if [ -n "$notes" ]; then
+    msg="${msg:+$msg
+
+}Auto memory saved a correction for this repo:
+$notes
+If it holds for anyone working here, not just this user, record it with update-repo. If it is personal, leave it."
+  fi
+  [ -n "$msg" ] || return 0
+  # Codex documents only decision/reason for Stop; Claude Code takes additionalContext.
+  if [ "${1:-}" = codex ]; then
+    printf '{"decision":"block","reason":"%s"}\n' "$(json_string "$msg")"
+  else
+    printf '{"hookSpecificOutput":{"hookEventName":"Stop","additionalContext":"%s"}}\n' "$(json_string "$msg")"
+  fi
+}
+
+# Rough day count; enough for a 90-day threshold.
+days() {
+  IFS=- read -r y m d <<EOF
+$1
+EOF
+  echo $((y * 365 + ${m#0} * 30 + ${d#0}))
+}
+
+# Model generation: claude-opus-5-5 -> 5. Other vendors' ids give nothing, so
+# only the 90-day rule applies to them.
+generation() { printf '%s' "$1" | sed -n 's/^claude-[a-z]*-\([0-9][0-9]*\).*/\1/p'; }
+
+start() {
+  input=$(cat)
+  [ -f "$state/memory-baseline" ] || new_corrections >/dev/null
+  stamp=$(sed -n 's/.*<!-- reviewed: \([0-9][0-9-]*\) \([^ ]*\) -->.*/\1 \2/p' AGENTS.md 2>/dev/null | head -1)
+  [ -n "$stamp" ] || return 0
+  reviewed=${stamp% *}
+  then_model=${stamp#* }
+  now_model=$(printf '%s' "$input" | sed -n 's/.*"model"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p')
+  reason=
+  now_gen=$(generation "$now_model")
+  then_gen=$(generation "$then_model")
+  if [ -n "$now_gen" ] && [ -n "$then_gen" ] && [ "$now_gen" != "$then_gen" ]; then
+    reason="the model generation changed since the last review ($then_model, now $now_model)"
+  fi
+  age=$(($(days "$(date +%Y-%m-%d)") - $(days "$reviewed")))
+  [ -z "$reason" ] && [ "$age" -ge 90 ] && reason="the last review was $age days ago"
+  [ -n "$reason" ] || return 0
+  seen "review $(date +%Y-%W)" && return 0
+  msg="This repo's instruction files are due a review: $reason. Offer the user audit-repo once, at a natural point."
+  printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"%s"}}\n' "$(json_string "$msg")"
+}
+
+case ${1:-} in
+  check)
+    out=$(check)
+    [ -z "$out" ] || { printf '%s\n' "$out"; exit 1; }
+    ;;
+  stop) stop "${2:-}" ;;
+  start) start ;;
+  *) echo "usage: upkeep check|stop [codex]|start" >&2; exit 64 ;;
+esac

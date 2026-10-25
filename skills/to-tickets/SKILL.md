@@ -37,7 +37,7 @@ Break the work into **tracer bullet** tickets.
 
 Give each ticket its **blocking edges**: the other tickets that must complete before it can start. A ticket with no blockers can start immediately.
 
-When the source spec carries IDs (US1, D1, ...), each acceptance criterion cites the IDs it satisfies, and every ID lands in at least one ticket or is named as out of scope. A spec item still open or awaiting confirmation (its Carried Forward section) goes on the ticket it affects, in Blocked by when the ticket cannot proceed without the answer.
+When the source spec carries IDs (US1, D1, ...), each acceptance criterion cites the IDs it satisfies, and every ID lands in at least one ticket or is named as out of scope. A spec item still open or awaiting confirmation (its Carried Forward section) goes on the ticket it affects, stated in plain words with its ID, in Blocked by when the ticket cannot proceed without the answer.
 
 **Wide refactors are the exception to vertical slicing.** A **wide refactor** is one mechanical change (rename a column, retype a shared symbol) whose **blast radius** fans across the whole codebase, so a single edit breaks thousands of call sites at once and no vertical slice can land green. Don't force it into a tracer bullet; sequence it as **expand–contract**. First expand: add the new form beside the old so nothing breaks. Then migrate the call sites over in batches sized by blast radius (per package, per directory), each batch its own ticket blocked by the expand, keeping CI green batch to batch because the old form still exists. Finally contract: delete the old form once no caller remains, in a ticket blocked by every migrate batch. When even the batches can't stay green alone, keep the sequence but let them share an integration branch that all block a final integrate-and-verify ticket; green is promised only there.
 
@@ -49,7 +49,7 @@ Present the proposed breakdown as a numbered list. For each ticket, show:
 - **Blocked by**: which other tickets (if any) must complete first
 - **What it delivers**: the end-to-end behaviour this ticket makes work
 
-When the spec carries IDs, follow the list with a coverage table: one row per spec ID, the tickets that cover it, and **UNCOVERED** where none do. Fix or explain every uncovered row before asking for approval.
+When the spec carries IDs, follow the list with a coverage table: one row per spec ID with its name, the tickets that cover it, and **UNCOVERED** where none do. Fix or explain every uncovered row before asking for approval.
 
 Ask the user:
 

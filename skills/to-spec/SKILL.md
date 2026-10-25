@@ -16,9 +16,9 @@ The issue tracker and triage label vocabulary should have been provided to you. 
 
 Check with the user that these seams match their expectations.
 
-3. Write the spec using the template below. Give every user story and implementation decision a stable ID and a source pointer, so tickets and reviews can cite it. Keep the decision numbers grilling already assigned (D1, D2, ...); number new decisions after the highest existing one, and user stories US1, US2, ...
+3. Write the spec using the template below. Give every user story and implementation decision a stable ID, its plain name, and a source pointer, so tickets and reviews can cite it. Keep each decision's original ID from grilling (D1, D2, ...), with its ticket prefix when it came from a wayfinder map (08/D3); number decisions new to the spec after the highest unprefixed one, and user stories US1, US2, ...
 
-4. Before publishing, check the draft against the records: the ADRs and `CONTEXT.md` in the area, any wayfinder map and its closed decision tickets, and the decisions settled in this conversation. Confirm that every settled decision appears in the spec or in Out of Scope. If anything contradicts, list each contradiction with the IDs and sources involved and resolve it with the user before publishing. Besides the seam check, this is the only question this skill asks.
+4. Before publishing, check the draft against the records: the ADRs and `CONTEXT.md` in the area, any wayfinder map and its closed decision tickets, and the decisions settled in this conversation. Confirm that every settled decision appears in the spec or in Out of Scope. If anything contradicts, list each contradiction in plain words with the IDs and sources involved and resolve it with the user before publishing, asking each as a [grilling](../grilling/SKILL.md) decision card. Besides the seam check, this is the only question this skill asks.
 
 5. Publish the spec to the project issue tracker. Apply the `ready-for-agent` triage label - no need for additional triage.
 
@@ -46,7 +46,7 @@ This list of user stories should be extremely extensive and cover all aspects of
 
 ## Implementation Decisions
 
-A list of implementation decisions that were made, each as `**D<n>.** <decision>. *Source: <grilling round, ADR, map ticket, or prototype>*`. Note who made the call: the user, or the agent under delegated authority. This can include:
+A list of implementation decisions that were made, each as `**D<n> <name>.** <decision>. Why: <the reason it was chosen, in a sentence>. *Source: <grilling round, ADR, map ticket, or prototype>*`. Note who made the call: the user, or the agent under delegated authority. This can include:
 
 - The modules that will be built/modified
 - The interfaces of those modules that will be modified
@@ -70,7 +70,7 @@ A list of testing decisions that were made. Include:
 
 ## Carried Forward
 
-Everything planning left unsettled, so it survives into the tickets. Omit the section if nothing remains. Each item cites its ID:
+Everything planning left unsettled, so it survives into the tickets. Omit the section if nothing remains. Each item is stated in plain words and cites its ID:
 
 - **To confirm:** calls the agent made on the user's behalf that the user has not yet confirmed.
 - **Open:** questions still unanswered, with what they block.

@@ -1,0 +1,10 @@
+{
+  "hooks": {
+    "SessionStart": [
+      { "hooks": [ { "type": "command", "command": "sh \"$(git rev-parse --show-toplevel)/.agents/hooks/upkeep\" start" } ] }
+    ],
+    "Stop": [
+      { "hooks": [ { "type": "command", "command": "sh \"$(git rev-parse --show-toplevel)/.agents/hooks/upkeep\" stop codex" } ] }
+    ]
+  }
+}

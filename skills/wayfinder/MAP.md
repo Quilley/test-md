@@ -25,7 +25,7 @@ Domain context, standing preferences, execution scope, and skills needed in late
 
 ## Decisions so far
 
-One linked ticket name and a brief gist per current resolution. Include a material qualification in the gist when omitting it would change the meaning.
+One linked ticket name and a brief gist per current resolution, written for a cold reader. Include a material qualification in the gist when omitting it would change the meaning.
 
 ## Not yet specified
 
@@ -40,7 +40,15 @@ Excluded work, the reason, and links to any tickets closed on that basis.
 
 Size a ticket around a coherent decision and the context needed to resolve it. Give it a clear title, a question, and genuine blocking dependencies. Name the decision it affects and the evidence needed when these are not obvious from the question. Label the type `wayfinder:research`, `wayfinder:grilling`, `wayfinder:prototype`, or `wayfinder:task`.
 
-Each ticket opens with a `## Current state` block under its question, rewritten each round, never appended to: the answer so far with its status (proposed, chosen by the user, or chosen by the agent and **to confirm**), the open branches, and the next step. Its first line is the map's gist. Below it, `## Rounds` is an append-only log of what each round found and settled. When another ticket's decision touches this one, rewrite the state and add one log line; do not add a "Notes from..." section. Status is `open`, `claimed`, `resolved`, or `deferred` (parked until a named condition, which the map lists).
+Each ticket opens with a `## Current state` block under its question, rewritten each round, never appended to: the answer so far with its status (proposed, chosen by the user, or chosen by the agent and **to confirm**), the open branches, and the next step, in about 150 words. Its first line is the map's gist. Below it, `## Decisions` holds one entry per decision taken in this ticket, the one place its ID resolves:
+
+```markdown
+**08/D3 Fixed pass criteria.** The decision in plain words. Why: the reason. Status: proposed, chosen by the user, or chosen by the agent and to confirm. Reopen if: the condition.
+```
+
+When a decision changes, rewrite its entry in place and add a line to the log. Below that, `## Rounds` is an append-only log of what each round found and settled. When another ticket's decision touches this one, rewrite the state and add one log line; do not add a "Notes from..." section. Status is `open`, `claimed`, `resolved`, or `deferred` (parked until a named condition, which the map lists).
+
+Decision IDs are scoped to their ticket: D1, D2, ... inside it, cited as `<ticket>/D<n>` everywhere else. Cite criteria and grill-question labels the same way, each beside its plain meaning, as grilling's names and IDs rule describes.
 
 An unanswered but precise question belongs in a ticket even when blocked. Fog is for questions that cannot yet be specified. As evidence sharpens the fog, create the relevant tickets and remove the graduated entries so each question has one home.
 

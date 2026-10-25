@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The queue is part of the machine</title>
+  <!-- ihd:styles -->
+</head>
+<body>
+  <a class="ihd-skip" href="#content">Skip to content</a>
+  <div class="ihd-page">
+    <header class="ihd-masthead">
+      <span class="ihd-mark">Working ideas / 01</span>
+      <button type="button" data-ihd-theme-toggle aria-pressed="false" hidden>Dark appearance</button>
+    </header>
+    <main id="content">
+      <header class="ihd-hero">
+        <p class="ihd-eyebrow">Visual essay</p>
+        <h1>The queue is part<br>of the machine.</h1>
+        <p class="ihd-deck">A faster machine can leave a café just as slow. The missing part of the explanation is the handoff.</p>
+        <div class="ihd-meta"><span>One simplified café</span><span>Illustrative model</span><span>Not measured results</span></div>
+      </header>
+      <figure class="ihd-figure" aria-labelledby="flow-caption">
+        <p class="ihd-figure-title">A steady flow of orders, in drinks per minute</p>
+        <div class="ihd-flow">
+          <div class="ihd-node">
+            <span class="ihd-node-label">Orders arrive</span>
+            <svg width="110" height="38" viewBox="0 0 110 38" aria-hidden="true"><g fill="var(--ihd-accent)"><circle cx="9" cy="11" r="5"/><circle cx="30" cy="11" r="5"/><circle cx="51" cy="11" r="5"/><circle cx="9" cy="29" r="5"/><circle cx="30" cy="29" r="5"/><circle cx="51" cy="29" r="5"/></g></svg>
+            <span class="ihd-node-value">6</span><span class="ihd-small">orders / min</span>
+          </div>
+          <span class="ihd-arrow" aria-hidden="true">→</span>
+          <div class="ihd-node">
+            <span class="ihd-node-label">Machine capacity</span>
+            <svg width="110" height="38" viewBox="0 0 110 38" aria-hidden="true"><g fill="none" stroke="var(--ihd-muted)" stroke-width="1.5"><rect x="2" y="2" width="65" height="33" rx="3"/><path d="M10 11h20m-20 5h20m12-5h17M15 24v7m30-7v7"/><circle cx="55" cy="25" r="4"/></g></svg>
+            <span class="ihd-node-value">8</span><span class="ihd-small">drinks / min</span>
+          </div>
+          <span class="ihd-arrow" aria-hidden="true">→</span>
+          <div class="ihd-node ihd-node--bottleneck">
+            <span class="ihd-node-label">Handoff capacity</span>
+            <svg width="110" height="38" viewBox="0 0 110 38" aria-hidden="true"><g fill="none" stroke="var(--ihd-accent)" stroke-width="1.5"><path d="M4 8h18v19H4zm18 3h5v10h-5M35 8h18v19H35zm18 3h5v10h-5M1 32h63"/></g></svg>
+            <span class="ihd-node-value">4</span><span class="ihd-small">drinks / min · bottleneck</span>
+          </div>
+        </div>
+        <figcaption id="flow-caption">Six orders enter each minute. Only four finished drinks can leave. Under these constant rates, unfinished work grows by two orders per minute somewhere in the system.</figcaption>
+      </figure>
+      <section class="ihd-section ihd-reading" aria-labelledby="visible-problem">
+        <h2 id="visible-problem">The visible queue points elsewhere.</h2>
+        <p>Let's say we watch this café for a few minutes. Orders keep arriving, the machine keeps working, and customers keep waiting. The natural guess is that the machine needs to move faster.</p>
+        <p>But a drink still needs a lid, a name and a person to hand it over. In this model, that last step handles four drinks a minute. Making eight drinks a minute does not give the café eight completed orders a minute.</p>
+        <blockquote>The useful output is what reaches the customer.</blockquote>
+        <p>Where the unfinished orders accumulate depends on how the café organizes the work. They might wait before the machine, on the counter, or in a list of orders. The arithmetic tells us that work accumulates. It does not tell us exactly where.</p>
+      </section>
+      <section class="ihd-section" aria-labelledby="speed-up">
+        <div class="ihd-section-heading"><span class="ihd-section-number">01</span><h2 id="speed-up">Speed up the wrong step.</h2></div>
+        <div class="ihd-split">
+          <figure class="ihd-panel">
+            <p class="ihd-figure-title">Before · current machine</p>
+            <div class="ihd-bar-row"><span>Machine</span><div class="ihd-track"><div class="ihd-bar ihd-bar--muted" style="width:66.667%"></div></div><span>8 / min</span></div>
+            <div class="ihd-bar-row"><span>Handoff</span><div class="ihd-track"><div class="ihd-bar" style="width:33.333%"></div></div><span>4 / min</span></div>
+            <p class="ihd-result">4 completed / min</p>
+            <figcaption>The handoff limits sustained output.</figcaption>
+          </figure>
+          <figure class="ihd-panel ihd-panel--tint">
+            <p class="ihd-figure-title">After · faster machine</p>
+            <div class="ihd-bar-row"><span>Machine</span><div class="ihd-track"><div class="ihd-bar ihd-bar--muted" style="width:100%"></div></div><span>12 / min</span></div>
+            <div class="ihd-bar-row"><span>Handoff</span><div class="ihd-track"><div class="ihd-bar" style="width:33.333%"></div></div><span>4 / min</span></div>
+            <p class="ihd-result">4 completed / min</p>
+            <figcaption>More machine capacity, the same limiting step.</figcaption>
+          </figure>
+        </div>
+      </section>
+      <section class="ihd-section ihd-reading" aria-labelledby="where-look">
+        <h2 id="where-look">Look at the whole path.</h2>
+        <p>This example assumes constant rates, no lost orders and no other limits. A real café also has bursts of arrivals and variation in preparation time. Those would change the waiting experience, so these numbers cannot tell us how long a customer waits.</p>
+        <p>They do give us a place to look before buying a faster machine: follow a drink until someone can actually take it away.</p>
+      </section>
+    </main>
+    <footer class="ihd-footer"><span>Design specimen</span><span>Visual essay / Internal HTML Design</span></footer>
+  </div>
+  <!-- ihd:reader -->
+</body>
+</html>

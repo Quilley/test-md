@@ -42,24 +42,28 @@ For a consequential decision with weak evidence or credible competing explanatio
 
 At meaningful milestones and before handing off, examine the plan as a whole: does the objective still serve the need, which assumptions could break it, and have new decisions invalidated earlier ones? Run a premortem: assume the plan has failed and find the likeliest reasons. Follow those changes through affected decisions, dependencies, and scope. Propose the necessary revision, reopening, or cut and update authorized records after the decision is made.
 
-Keep evidence and rationale in the existing decision record, with a pointer to the source or reproducible check. Distinguish a chosen direction, an observed result, and a provisional inference. Preserve the reasons behind superseded decisions so future sessions can understand the change.
+Keep evidence and rationale in the existing decision record, with a pointer to the source or reproducible check. Distinguish a chosen direction, an observed result, and a provisional inference. Preserve the reasons behind superseded decisions so future sessions can understand the change. Reread the records you touched as a cold reader: each ID is explained where it appears or leads in one step to its decision record.
 
 ## Conversation and handoff
 
-Lead with the finding or recommendation that matters. Explain the mechanism or a concrete example when it makes the issue easier to judge. Other turns need no template.
+Write every message for a **cold reader**: someone who knows the domain but has forgotten this plan, coming back after days away. They should be able to judge each question and option from what is on the screen. Lead with the finding or recommendation that matters. Explain the mechanism or a concrete example when it makes the issue easier to judge. Other turns need no template.
 
-Number decisions across the session (D1, D2, ...) and keep each number for the life of the plan, so the user can answer "D3: B" and later records can cite it.
+**Names and IDs.** When a decision is first raised, give it a short plain name ("fixed pass criteria") and an ID. IDs run D1, D2, ... across the session and keep their number for the life of the plan, so the user can answer "D3: B" and records can cite it. When the plan's records hold several numbering scopes, such as a wayfinder map's tickets, qualify the ID with its scope (08/D3). An ID of a decision, ticket or criterion is a citation: say what it means, then put the ID in brackets, so the sentence still reads with the brackets removed.
 
-When a decision needs the user, present it as one card they can answer in a word:
+**Resuming.** When a session picks up a plan after a gap, open with a short brief before the first card: the destination in a sentence, what changed since the user last took part, what is waiting on them, and the decision now.
 
-- **Decision:** what is being decided and why it matters now, in a sentence.
-- **Options:** each with what it costs.
-- **I recommend:** one option, the decisive reason, and what it costs if I am wrong. If you cannot recommend, say what evidence would let you, and get it first.
-- **Queued:** the other open decisions, one line each, so the user sees what is coming and what depends on this. Show it on the first card and whenever it changed since the last one; otherwise omit it.
+**The decision card.** When a decision needs the user, present it as one card:
 
-Ask the card through the `AskUserQuestion` tool. Write the reasoning, the costs, and the queue in your message first, then call the tool with the decision number and a short label as the header, the recommended option first with "(Recommended)" appended to its label, and one line of cost in each option's description. Group small independent decisions in one call, within the tool's limits. Without the tool, render the card as a blockquote headed `❓ D<n>: <title>` so it stands apart from the rest of the message. Open-ended questions, such as what the underlying need is, have no options to pick from: ask those in plain text.
+- **Question:** what is being decided, in plain words, and what raised it now.
+- **Why it matters:** the chain from this choice to the destination: what it changes and through what mechanism. When that chain is hard to state, check whether the decision is really the user's; a choice that does not move the destination is usually a bounded choice under [AUTHORITY.md](AUTHORITY.md), made and listed **to confirm**.
+- **Already settled:** the earlier decisions that constrain this one, each in plain words with its ID. Omit when none apply.
+- **Options:** each with its strongest case, what it costs, what you would have to believe for it to be right, and how hard it is to undo.
+- **I recommend:** one option, the decisive reason, how confident you are, and what evidence would change your mind. If you cannot recommend, say what evidence would let you, and get it first.
+- **Queued:** the other open decisions, one plain line each with its ID, so the user sees what is coming and what depends on this. Show it on the first card and whenever it changed since the last one; otherwise omit it.
 
-Ask one decision at a time; group small independent ones when that helps. The card may run past the default length when the options need it, but keep it as short as the decision allows.
+Ask the card through the harness's question picker when one is available: `AskUserQuestion`. Write the full card in your message first. The picker is what the user answers from, so each option stands alone there too: the header is the ID and a short name; each label is a plain action phrase, the recommended one first with "(Recommended)" appended; each description says what the option does and what it costs, in words that need no other message. Group small independent decisions in one call, within the tool's limits. Without the tool, render the card as a blockquote headed `❓ D<n>: <name>` so it stands apart from the rest of the message. Open-ended questions, such as what the underlying need is, have no options to pick from: ask those in plain text.
+
+Ask one decision at a time. Gather confirmations of numbers, thresholds and other bounded choices into one **to confirm** list, each with its plain meaning and what it affects, rather than a card apiece. The card may run past the default length when the options need it, but keep it as short as the decision allows.
 
 Keep the queue honest. It holds every question you raised and have not settled, and every call you made on the user's behalf. A branch leaves it only when settled, dropped with a reason, or handed off with a revisit condition.
 

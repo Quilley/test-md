@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Field notes</title>
+  <style>
+    @keyframes ihd-orbit-travel { to { transform: rotate(360deg); } }
+    [data-ihd-motion] .ihd-orbit { animation: ihd-orbit-travel 28s linear infinite; transform-origin: 110px 110px; }
+    [data-ihd-motion] .ihd-motion-dot { transform: translate(110px, 32px); }
+    @media (prefers-reduced-motion: reduce) { [data-ihd-motion] .ihd-orbit { animation: none !important; } }
+  </style>
+  <!-- ihd:styles -->
+</head>
+<body>
+  <a class="ihd-skip" href="#content">Skip to content</a>
+  <div class="ihd-page" data-ihd-landing>
+    <header class="ihd-masthead" data-ihd-masthead><span class="ihd-mark">A small collection</span><nav aria-label="Page sections"><a href="#recent-notes">Notes</a><a href="#about-field-notes">About</a></nav></header>
+    <main id="content">
+      <div class="ihd-wordmark" data-ihd-wordmark aria-label="Field notes">Field<br>notes.</div>
+      <section class="ihd-reading ihd-landing-intro" aria-labelledby="landing-intro">
+        <p class="ihd-eyebrow">Ideas in motion</p>
+        <h1 id="landing-intro">A place to follow a question until it becomes clear.</h1>
+        <p class="ihd-deck">Short essays and working explanations about how systems behave, what evidence can tell us, and where a useful next question might lead.</p>
+        <figure class="ihd-landing-figure ihd-orbit-figure" data-ihd-motion aria-labelledby="orbit-caption">
+          <button type="button" data-ihd-motion-toggle aria-label="Pause motion" aria-pressed="false" hidden>Pause motion</button>
+          <svg viewBox="0 0 220 220" role="img" aria-labelledby="orbit-title orbit-description">
+            <title id="orbit-title">A question makes a measured orbit</title>
+            <desc id="orbit-description">A dot moves along a single closed path around a central point. The fixed image still shows the path and the two marks.</desc>
+            <circle cx="110" cy="110" r="78" fill="none" stroke="currentColor" stroke-dasharray="2 7" />
+            <circle cx="110" cy="110" r="5" fill="currentColor" />
+            <g class="ihd-orbit"><circle class="ihd-motion-dot" r="7" fill="currentColor" /></g>
+          </svg>
+          <figcaption id="orbit-caption">A question can circle the same subject while a better observation changes what we see.</figcaption>
+        </figure>
+      </section>
+      <section class="ihd-section ihd-reading ihd-prose" aria-labelledby="recent-notes">
+        <div class="ihd-section-heading ihd-landing-heading"><span class="ihd-section-number">01</span><h2 id="recent-notes">Recent notes</h2></div>
+        <article class="ihd-landing-entry">
+          <p class="ihd-meta">Mechanisms · 8 minute read</p>
+          <h3><a href="https://example.invalid/notes/queue">The queue is part of the machine</a></h3>
+          <p>A simple café model shows why the step that finishes the work can matter more than the step that starts it.</p>
+        </article>
+        <article class="ihd-landing-entry">
+          <p class="ihd-meta">Methods · 6 minute read</p>
+          <h3><a href="https://example.invalid/notes/measurement">What a measurement leaves out</a></h3>
+          <p>Every useful measure makes some parts of a system easier to see, while leaving other parts outside its frame.</p>
+        </article>
+      </section>
+      <section class="ihd-section ihd-reading ihd-prose" aria-labelledby="about-field-notes">
+        <div class="ihd-section-heading ihd-landing-heading"><span class="ihd-section-number">02</span><h2 id="about-field-notes">How to read these pages</h2></div>
+        <p>Some pages use a small model to make a mechanism visible. The numbers are labeled as assumptions when they are constructed. The point is to understand what follows from them, then notice what would need to be observed in the world.</p>
+        <p class="ihd-landing-contact" style="text-align:center"><a href="mailto:hello@example.invalid">Get in touch</a></p>
+      </section>
+    </main>
+    <footer class="ihd-footer"><span>Field notes · An independent collection</span></footer>
+  </div>
+  <!-- ihd:reader -->
+</body>
+</html>

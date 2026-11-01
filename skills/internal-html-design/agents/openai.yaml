@@ -1,0 +1,6 @@
+interface:
+  display_name: "Internal HTML Design"
+  short_description: "Readable offline documents, visuals, builds and landing pages"
+  default_prompt: "Use $internal-html-design to present this material as readable offline HTML with responsive visuals and the Sunday Essay Fuller design."
+policy:
+  allow_implicit_invocation: false

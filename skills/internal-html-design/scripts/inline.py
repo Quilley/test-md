@@ -54,13 +54,21 @@ class OfflineDependencies(HTMLParser):
     handle_startendtag = handle_starttag
 
 
-def assemble(source, faces):
+def assemble(source, faces=None, preview=False):
     for marker in ('<!-- ihd:styles -->', '<!-- ihd:reader -->'):
         if source.count(marker) != 1:
             raise ValueError(f'Input must contain exactly one {marker}')
-    css = font_css(faces) + '\n' + (ROOT / 'assets/theme.css').read_text()
+    bundled = faces is None
+    faces = ROOT / 'assets/fonts.css' if bundled else faces
+    notices = ''
+    if bundled:
+        for name in ('newsreader', 'manrope', 'geist'):
+            notice = (ROOT / f'assets/fonts/LICENSE-{name}.txt').read_text()
+            notices += '/*\n' + notice + '\n*/\n'
+    css = notices + font_css(faces) + '\n' + (ROOT / 'assets/theme.css').read_text()
     script = (ROOT / 'assets/reader.js').read_text()
-    output = source.replace('<!-- ihd:styles -->', '<style>\n' + css + '\n</style>')
+    flag = '<meta name="ihd-font-use" content="private-mockup">\n' if preview else ''
+    output = source.replace('<!-- ihd:styles -->', flag + '<style>\n' + css + '\n</style>')
     output = output.replace('<!-- ihd:reader -->', '<script>\n' + script + '\n</script>')
     if re.search(r'@import\b', output, re.I):
         raise ValueError('Inline imported CSS before assembly.')
@@ -75,13 +83,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('input', type=Path)
     parser.add_argument('output', type=Path)
-    mode = parser.add_mutually_exclusive_group(required=True)
-    mode.add_argument('--bundled-fonts', action='store_true', help='Embed the bundled Source Serif 4 and Libre Franklin faces.')
-    mode.add_argument('--font-css', type=Path, help='Font-face CSS for other licensed font files.')
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument('--preview-fonts', action='store_true', help='Compatibility alias for the bundled open-source fonts.')
+    mode.add_argument('--font-css', type=Path, help='Font-face CSS for appropriately authorized production assets.')
     args = parser.parse_args()
-    faces = ROOT / 'assets/fonts.css' if args.bundled_fonts else args.font_css
+    faces = args.font_css
     try:
-        output = assemble(args.input.read_text(), faces)
+        output = assemble(args.input.read_text(), faces, args.preview_fonts)
         with args.output.open('x') as target:
             target.write(output)
     except (OSError, ValueError) as error:

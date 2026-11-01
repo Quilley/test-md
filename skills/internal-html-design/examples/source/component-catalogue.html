@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reading a small system</title>
+  <style>
+    @keyframes catalogue-orbit-travel { to { transform: rotate(360deg); } }
+    [data-ihd-motion] .ihd-orbit { animation: catalogue-orbit-travel 32s linear infinite; transform-origin: 60px 60px; }
+    [data-ihd-motion] .ihd-motion-dot { transform: translate(60px, 18px); }
+    @media (prefers-reduced-motion: reduce) { [data-ihd-motion] .ihd-orbit { animation: none !important; } }
+  </style>
+  <!-- ihd:styles -->
+</head>
+<body>
+  <a class="ihd-skip" href="#content">Skip to content</a>
+  <div class="ihd-page">
+    <header class="ihd-masthead" data-ihd-masthead><span class="ihd-mark">Anatomy of a model</span><nav aria-label="Page sections"><a href="#mechanism">Components</a><a href="#sources">Sources</a></nav></header>
+    <main id="content">
+      <header class="ihd-hero ihd-reading">
+        <p class="ihd-eyebrow">Component catalogue · illustrative case</p>
+        <h1>Reading a small system.</h1>
+        <p class="ihd-deck">A set of editorial patterns for explaining a mechanism, keeping assumptions visible, and showing what a simple calculation does and does not establish.</p>
+        <div class="ihd-meta"><span>Constructed example</span><span>Constant rates</span><span>No field measurements</span></div>
+      </header>
+
+      <section class="ihd-section" aria-labelledby="mechanism">
+        <div class="ihd-section-heading"><span class="ihd-section-number">01</span><h2 id="mechanism">The path sets the output.</h2></div>
+        <figure class="ihd-figure" aria-labelledby="instrument-caption">
+          <p class="ihd-figure-title">A serial path, measured in orders per minute</p>
+          <div class="ihd-visual">
+            <svg class="ihd-process ihd-diagram-wide" width="672" height="160" viewBox="0 0 672 160" role="img" aria-labelledby="path-title path-desc">
+              <title id="path-title">Handoff limits completed output</title>
+              <desc id="path-desc">Six arrive per minute. Preparation can handle eight, but handoff can complete four. These are constructed constant rates.</desc>
+              <g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M120 36H310M356 36H546M300 30l10 6-10 6M536 30l10 6-10 6"/><circle cx="100" cy="36" r="4" fill="currentColor"/><circle cx="336" cy="36" r="4" fill="currentColor"/><circle cx="572" cy="36" r="6" stroke-dasharray="2 3"/></g>
+              <g text-anchor="middle"><text class="ihd-svg-label" x="100" y="82">ARRIVALS</text><text class="ihd-svg-data" x="100" y="121">6 / min</text><text class="ihd-svg-label" x="336" y="82">PREPARATION</text><text class="ihd-svg-data" x="336" y="121">8 / min</text><text class="ihd-svg-label" x="572" y="82">HANDOFF</text><text class="ihd-svg-data" x="572" y="121">4 / min</text></g>
+            </svg>
+            <div class="ihd-flow ihd-diagram-small">
+              <div class="ihd-node"><span class="ihd-node-label">Arrivals</span><span class="ihd-node-value">6</span><span class="ihd-small">orders / min</span></div><span class="ihd-arrow" aria-hidden="true">→</span>
+              <div class="ihd-node"><span class="ihd-node-label">Preparation</span><span class="ihd-node-value">8</span><span class="ihd-small">orders / min</span></div><span class="ihd-arrow" aria-hidden="true">→</span>
+              <div class="ihd-node ihd-node--bottleneck"><span class="ihd-node-label">Handoff</span><span class="ihd-node-value">4</span><span class="ihd-small">orders / min</span></div>
+            </div>
+          </div>
+          <figcaption id="instrument-caption">Handoff is the limiting step. Four orders can leave each minute under the stated assumptions; the path shows sequence, not waiting time.</figcaption>
+        </figure>
+        <figure class="ihd-instrument ihd-orbit-figure" data-ihd-motion aria-labelledby="catalogue-orbit-caption">
+          <button type="button" data-ihd-motion-toggle aria-label="Pause motion" aria-pressed="false" hidden>Pause motion</button>
+          <svg viewBox="0 0 120 120" role="img" aria-labelledby="catalogue-orbit-title catalogue-orbit-description">
+            <title id="catalogue-orbit-title">A point moves along a closed path</title>
+            <desc id="catalogue-orbit-description">The static frame shows a central point and a second point on a circular path. When motion is enabled, the second point follows the same closed path.</desc>
+            <circle cx="60" cy="60" r="42" fill="none" stroke="currentColor" stroke-dasharray="2 6" />
+            <circle cx="60" cy="60" r="4" fill="currentColor" />
+            <g class="ihd-orbit"><circle class="ihd-motion-dot" r="5" fill="currentColor" /></g>
+          </svg>
+          <figcaption id="catalogue-orbit-caption">The static marks and closed path remain legible without motion.</figcaption>
+        </figure>
+        <aside class="ihd-margin-note" aria-label="Margin note"><strong>Margin note</strong><p>Capacity describes a sustained rate here. It does not predict the wait for any one customer.</p></aside>
+        <p class="ihd-reading">If six orders enter each minute and four can be completed, unfinished work grows by two orders per minute. That arithmetic follows from the inputs. It does not identify where the queue forms or how long anyone waits.</p>
+        <blockquote>Follow the work to the point where it is complete.</blockquote>
+      </section>
+
+      <section class="ihd-section ihd-reading ihd-prose" aria-labelledby="qualification">
+        <div class="ihd-section-heading"><span class="ihd-section-number">02</span><h2 id="qualification">Keep the boundary in view.</h2></div>
+        <div class="ihd-note"><p><strong>Model note.</strong> The rates below are invented to demonstrate the calculation. They are not measurements of a real operation.</p></div>
+        <div class="ihd-note ihd-note--warning"><p><strong>Warning.</strong> The model assumes steady arrivals, no lost orders and independent steps. Shared staff or counter space could make the second handoff less than twice as capable.</p></div>
+        <details class="ihd-disclosure">
+          <summary>What assumptions make this calculation work?</summary>
+          <p>The path is serial, each step has a fixed capacity, and unfinished work remains available to the next step. Bursts, variation, staffing and customer choices are outside this example.</p>
+        </details>
+      </section>
+
+      <section class="ihd-section" aria-labelledby="comparison">
+        <div class="ihd-section-heading"><span class="ihd-section-number">03</span><h2 id="comparison">Compare two changes.</h2></div>
+        <div class="ihd-split">
+          <article class="ihd-panel ihd-prose" aria-labelledby="upgrade">
+            <p class="ihd-status">Option A · machine upgrade</p>
+            <h3 id="upgrade">Raise machine capacity to 12.</h3>
+            <p>Handoff remains at four orders per minute, so completed output stays at four.</p>
+          </article>
+          <article class="ihd-panel ihd-prose" aria-labelledby="handoff">
+            <p class="ihd-status">Option B · second handoff</p>
+            <h3 id="handoff">Test capacity of eight.</h3>
+            <p>If the added position operates independently, path capacity rises above the six incoming orders per minute.</p>
+          </article>
+        </div>
+        <div class="ihd-legend" aria-label="Chart legend">
+          <span><i class="ihd-key ihd-key--solid" aria-hidden="true"></i>Model input</span>
+          <span><i class="ihd-key ihd-key--hatch" aria-hidden="true"></i>Assumption to test</span>
+        </div>
+      </section>
+
+      <section class="ihd-section" aria-labelledby="inputs">
+        <div class="ihd-section-heading"><span class="ihd-section-number">04</span><h2 id="inputs">Inputs and outputs.</h2></div>
+        <div class="ihd-table-wrap" role="region" aria-label="Model inputs and calculated capacities" tabindex="0">
+          <table>
+            <caption>Constructed rates and model consequences, all per minute</caption>
+            <thead><tr><th scope="col">Quantity</th><th scope="col">Current</th><th scope="col">A · upgrade</th><th scope="col">B · added handoff</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Arrivals</th><td class="ihd-number">6</td><td class="ihd-number">6</td><td class="ihd-number">6</td></tr>
+              <tr><th scope="row">Machine capacity</th><td class="ihd-number">8</td><td class="ihd-number">12</td><td class="ihd-number">8</td></tr>
+              <tr><th scope="row">Handoff capacity</th><td class="ihd-number">4</td><td class="ihd-number">4</td><td class="ihd-number">8*</td></tr>
+              <tr><th scope="row">Path capacity</th><td class="ihd-number">4</td><td class="ihd-number">4</td><td class="ihd-number">8*</td></tr>
+              <tr><th scope="row">Unfinished work</th><td>Grows by 2</td><td>Grows by 2</td><td>Can clear*</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="ihd-small">* Depends on the unverified assumption that the handoff positions operate independently.</p>
+      </section>
+
+      <section class="ihd-section ihd-reading ihd-prose" aria-labelledby="controls">
+        <div class="ihd-section-heading"><span class="ihd-section-number">05</span><h2 id="controls">A labeled control with a static baseline.</h2></div>
+        <div class="ihd-split">
+          <div>
+            <div data-catalogue-controls hidden>
+              <label for="arrival-rate">Arrival rate, orders per minute</label>
+              <input id="arrival-rate" type="range" min="1" max="12" step="1" value="6" aria-describedby="control-baseline">
+            </div>
+            <p id="control-baseline" class="ihd-small">Static baseline: six arrive; four complete; unfinished work grows by two orders per minute.</p>
+          </div>
+          <div class="ihd-panel ihd-prose">
+            <p class="ihd-figure-title">Baseline result</p>
+            <p class="ihd-result" data-catalogue-result role="status" aria-live="polite">+2 unfinished orders / min</p>
+            <p class="ihd-small" data-catalogue-description>Incoming work exceeds the path's capacity.</p>
+            <p class="ihd-small">This deterministic model shows growth pressure on unfinished work; it does not predict waiting time.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="ihd-section ihd-reading ihd-prose" aria-labelledby="sources">
+        <div class="ihd-section-heading"><span class="ihd-section-number">06</span><h2 id="sources">Sources and method.</h2></div>
+        <p>This page contains no external empirical source. All values are constructed for the example, and all conclusions are conditional on the stated assumptions.</p>
+        <pre><code>path_capacity = min(machine, handoff)</code></pre>
+        <aside class="ihd-footnotes" aria-label="Calculation note">
+          <p id="capacity-rule"><strong>1.</strong> In a serial path with fixed capacities, sustained path capacity is the smaller step capacity: min(machine, handoff). Under the current inputs, min(8, 4) = 4 orders per minute.</p>
+        </aside>
+        <p><a href="#capacity-rule" aria-label="Read calculation note 1">Calculation note 1</a></p>
+      </section>
+    </main>
+    <footer class="ihd-footer"><span>Component catalogue / Internal HTML Design</span></footer>
+  </div>
+  <!-- ihd:reader -->
+  <script>
+    (() => {
+      const controls = document.querySelector('[data-catalogue-controls]');
+      const input = document.querySelector('#arrival-rate');
+      const result = document.querySelector('[data-catalogue-result]');
+      const description = document.querySelector('[data-catalogue-description]');
+      if (!controls || !input || !result || !description) return;
+      input.addEventListener('input', () => {
+        const arrivals = input.valueAsNumber;
+        const growth = Math.max(0, arrivals - 4);
+        if (growth) {
+          result.textContent = `+${growth} unfinished orders / min`;
+          description.textContent = "Incoming work exceeds the path's capacity.";
+        } else if (arrivals === 4) {
+          result.textContent = 'No net growth / min';
+          description.textContent = 'Arrivals exactly match capacity in this constant-rate model.';
+        } else {
+          result.textContent = `${4 - arrivals} orders / min spare capacity`;
+          description.textContent = 'The path can keep up under these assumptions.';
+        }
+      });
+      controls.hidden = false;
+    })();
+  </script>
+</body>
+</html>

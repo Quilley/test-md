@@ -1,3 +1,4 @@
-/* Bundled Source Serif 4 and Libre Franklin, both under the SIL Open Font License (see fonts/OFL-*.txt). */
-@font-face { font-family: 'IHD Source Serif 4'; font-weight: 200 900; font-style: normal; font-display: swap; src: url('fonts/SourceSerif4-Variable.ttf') format('truetype'); }
-@font-face { font-family: 'IHD Libre Franklin'; font-weight: 100 900; font-style: normal; font-display: swap; src: url('fonts/LibreFranklin-Variable.ttf') format('truetype'); }
+@font-face { font-family: 'IHD Serif'; src: url('fonts/newsreader-latin-200-800-normal.woff2') format('woff2'); font-style: normal; font-weight: 200 800; font-display: swap; }
+@font-face { font-family: 'IHD Serif'; src: url('fonts/newsreader-latin-200-800-italic.woff2') format('woff2'); font-style: italic; font-weight: 200 800; font-display: swap; }
+@font-face { font-family: 'IHD Sans'; src: url('fonts/manrope-latin-200-800-normal.woff2') format('woff2'); font-style: normal; font-weight: 200 800; font-display: swap; }
+@font-face { font-family: 'IHD Mono'; src: url('fonts/geist-mono-latin-wght-normal.woff2') format('woff2'); font-style: normal; font-weight: 100 900; font-display: swap; }

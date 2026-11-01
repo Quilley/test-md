@@ -1,84 +1,58 @@
-# Shared design reference
+# Design foundation
 
-This is a presentation system for internal documents and explanations. A calling skill keeps its task, evidence standards and domain vocabulary. Apply these presentation defaults when the user explicitly requests this system; a task-specific request takes precedence. It does not automatically restyle other skills or provide an application UI kit.
+## Typography and space
 
-## Identity and composition
+Sunday Essay Fuller carries the editorial character approved in Greedy Shortcut and MMM V9. Those pages inform visual judgment, not mandatory branding or page structure. This package contains its own assets.
 
-Warm paper, dark slate-green ink, restrained emerald emphasis and generous whitespace. Serif titles give the page an editorial character; precise schematics carry difficult relationships. Avoid surrounding every paragraph with a box. Use borders to group a figure or comparison rather than decorate the whole page.
+`assets/theme.css` owns exact values. Use its tokens and semantic classes. The default reading column is 660px, the standard figure 672px and the wide composition 1120px. Choose width from the material. Keep prose narrow even when a nearby figure needs more room.
 
-Use `assets/theme.css` for exact color, typography, width, spacing, radius and motion values. Change that stylesheet when adjusting a shared value. The files in `examples/source/` are authored examples, not competing token sources.
+| Role | Face | Default |
+| --- | --- | --- |
+| Prose and short diagram phrases | Newsreader / `IHD Serif` | `--ihd-weight-prose`: 480; prose 18px / 1.6 |
+| Display, pull quote, primary result | Newsreader | `--ihd-weight-display`: 400 |
+| Sections, controls, essential labels | Manrope / `IHD Sans` | `--ihd-weight-heading`: 550 |
+| Secondary UI and captions | Manrope | `--ihd-weight-ui`: 450; captions 14px |
+| Quantities and code | Geist Mono / `IHD Mono` | Tabular numerals, explicit units |
+| Strong emphasis | Inherited face | `--ihd-weight-strong`: 650 |
 
-- Source Serif 4 supplies titles, headings, reading prose, quotations and display conclusions. Libre Franklin supplies labels, captions, controls, diagram annotations, table data and code. Small explanatory paragraphs still use Source Serif 4; text size alone does not determine the font. Use `.ihd-label` for annotations without another semantic pattern. Both families are bundled as variable fonts, so use their weights as supplied and do not synthesize styles. No italic files are bundled; a real italic needs its companion file.
-- A reading column carries sustained prose. A wider figure can occupy the full page width. `ihd-split` stacks comparisons on narrow screens; `ihd-flow` turns a horizontal process into a vertical sequence.
-- Use an emerald accent for emphasis and selection. Red and amber have semantic meanings and require labels or line patterns alongside color. Charts needing more categories should add distinguishable marks and a legend rather than improvise another visual theme.
-- Default to the light treatment. `data-ihd-theme="dark"` on the root selects the matched dark treatment. The reader script supplies an optional persistent toggle; without JavaScript the page stays readable in light appearance.
+Use real bundled upright/italic Newsreader and upright Manrope/Geist Mono. `font-synthesis: none` prevents fabricated faces. Latin subsets are bundled; supply an appropriate licensed face for other scripts. Confirm rendered glyphs rather than relying on a CSS family name.
 
-Visuals should establish a relationship, change, mechanism or limit. Introduce the question, show the figure, and explain what it establishes. One piece may need several compositions. Use inline SVG for custom schematics; render library-created charts or graphs to inline SVG at authoring time rather than loading a remote runtime. Keep labels legible on mobile: reflow or simplify a diagram instead of shrinking a dense canvas into unreadable text. Pair each substantive visual with a caption or accessible description.
+Sustained prose is justified in full reading columns. Put a reading group in `.ihd-prose`; at an actual container width of 448px or less its paragraphs align left. Older markup gets a viewport fallback. This avoids stretched word spacing in narrow panels as well as phones. Headings, decks, captions, lists, notes and controls stay aligned for reading. Set the correct document language and retain native text resizing.
 
-## Compose from semantic patterns
+## Visual language
 
-The starter supplies the page shell, optional theme control and two inlining markers. It is an authoring input, not a finished artifact. Keep one descriptive H1 and a logical heading hierarchy. Add language and meaningful page title.
+Use light paper, neutral ink, square edges and generous spacing. Let type and space establish hierarchy. Frames communicate an apparatus, comparison or grouping; an empty border is not a default decoration. Avoid nested frames around simple process nodes.
 
-| Need | Pattern |
+Charts use direct labels, shapes, hatching and line styles. Warnings need an explicit word such as “Assumption”. A shade difference alone must not identify a series or state. Color is an authorized exception, not the default.
+
+The palette is one ink on light paper. Series use only black-derived tones: `--ihd-series-1` (ink), `--ihd-series-2` (#4d4d4d) and `--ihd-series-3` (#8a8a8a). Each clears 3:1 on paper and they sit about 2:1 apart; a fourth tone would not be distinguishable, so more than three series become small multiples. This rule overrides the palette of any chart skill for documents built here. Decorative rules use `--ihd-line`, which is too light to identify anything. Control borders use `--ihd-control-line` and bar tracks use `--ihd-track-line` (both #767676, 4.4:1 on paper). The documents are light only: `color-scheme: light` is a decision, not an omission, and a dark set would need its own tones checked against the same 3:1 rule.
+
+Essential figure labels must render at least 14px after scaling. A 16px label on a 900-unit SVG displayed at 450px is only 8px. Recompose that figure. The `ihd-svg-label`, `ihd-svg-value` and `ihd-svg-data` roles distinguish sans labels, serif phrases and monospaced quantities; chart-specific labels use `ihd-chart-label` and `ihd-chart-value`.
+
+## Component contracts
+
+| Pattern | Use |
 | --- | --- |
-| Sustained argument | `.ihd-reading` inside a section; headings only where orientation helps |
-| Wide explanation | `figure.ihd-figure` with a label, diagram and `figcaption` |
-| Comparison | `.ihd-split` containing independently labeled figures or panels |
-| Sequential mechanism | `.ihd-flow`, labeled `.ihd-node` elements and decorative arrows hidden from assistive technology |
-| Evidence or assumptions | A real `table` with caption and scoped headers inside `.ihd-table-wrap` |
-| Important qualification | `.ihd-note`, or `.ihd-note--warning` with a textual warning |
-| Source support | Linked superscripts, body caveats and `.ihd-footnotes`; preserve the caller's citation requirements |
-| Controls | Real labeled inputs and buttons inside `.ihd-controls`; render a useful static baseline |
+| `.ihd-page`, `.ihd-reading`, `.ihd-wide` | Page shell and width tiers; one `h1`, logical headings, skip link to `main#content` |
+| `.ihd-prose` | Reading container; combine with `.ihd-reading` when it needs the reading width |
+| `.ihd-visual` | Inner visual container, after the figure's width is established; local diagram adaptation |
+| `.ihd-hero`, `.ihd-deck`, `.ihd-meta` | Title and optional context |
+| `.ihd-section`, `.ihd-section-heading` | Reading rhythm and optional numbering |
+| `.ihd-figure`, `.ihd-fit-content` | A figure and its intrinsic width; caption follows the content's alignment |
+| `.ihd-instrument` | Deliberate frame around an apparatus or plot |
+| `.ihd-diagram-wide`, `.ihd-diagram-small` | Equivalent compositions; unique IDs and only one exposed at a time |
+| `.ihd-flow`, `.ihd-node`, `.ihd-arrow` | Wrapping HTML process nodes; connectors are decorative |
+| `.ihd-split`, `.ihd-panel` | Comparisons that stack when their own space becomes insufficient |
+| `.ihd-table-wrap`, `.ihd-figure-scroll` | Named, focusable local scroll region when preserving relationships needs it |
+| `.ihd-number` | Explicit monospaced numerical cells; ordinary table cells use sans text |
+| `.ihd-toc`, `.ihd-glossary`, `.ihd-footnotes` | Optional contents, definitions and source navigation. Inside `.ihd-doc` (contents first, then `main`) the contents become a sticky left rail from 80rem and an ordinary disclosure below it |
+| `.ihd-s1`–`.ihd-s3`, `.ihd-line`, `.ihd-edge`, `.ihd-shape`, `.ihd-hatch`, `.ihd-ball`, `.ihd-pin` | The primitive kit; see [the visual grammar](visual-grammar.md) |
+| `.ihd-stockflow`, `.ihd-capacity`, `.ihd-swim`, `.ihd-callout` | Recipes for what builds up, which step limits, who does what and the parts of one thing |
+| `.ihd-note`, `.ihd-disclosure`, `.ihd-margin-note` | Qualifications and optional depth; conclusions remain outside disclosures |
+| `.ihd-controls`, `.ihd-result` | Labeled native controls and a complete static baseline |
+| `.ihd-print-only`, `.ihd-screen-only` | Equivalent print alternatives for spatially dense figures |
+| `.ihd-footer` | Quiet centered footer, with contact only when appropriate |
 
-Use domain labels rather than architecture-specific terms inherited from the original report. Keep source, observation, assumption and inference distinguishable. Constructed values in a mockup must be identified as such.
+Do not put size containment on a shrink-to-fit figure itself. `.ihd-visual` goes inside a figure whose width has already been chosen. The standard container switches diagram compositions at 608px; choose another threshold in authored CSS when the content needs it. Legacy viewport classes remain supported.
 
-## Guided explanations and simulations
-
-Scrolling is the default. In a guided sequence, put each complete step in a direct child with `data-ihd-step` inside a `data-ihd-steps` section. Use ordinary headings and prose. Put the controls in `data-ihd-step-controls`, initially `hidden`, with:
-
-```html
-<div class="ihd-controls" data-ihd-step-controls hidden>
-  <button type="button" data-ihd-step-toggle aria-pressed="false">Guide me</button>
-  <div class="ihd-step-nav" data-ihd-step-nav hidden>
-    <button type="button" data-ihd-previous>Previous</button>
-    <span class="ihd-step-status" data-ihd-step-status role="status" aria-live="polite"></span>
-    <button type="button" data-ihd-next>Next</button>
-  </div>
-</div>
-```
-
-`assets/reader.js` progressively adds guidance. It leaves all steps visible until the reader chooses “Guide me”, supports ordinary keyboard activation, moves focus to the new step heading, and allows returning to the full text. Use one step group per sequence; groups operate independently.
-
-Keep a simulation's domain logic in its own inline script. The shared reader script only handles appearance and step navigation. Explain units, assumptions, the baseline and limitations in static text. Reveal interactive controls after their handlers are attached. Respect reduced motion, avoid autoplay, and keep each result accessible to assistive technology. JavaScript-disabled reading must retain the baseline figure and substantive explanation.
-
-## Fonts and offline delivery
-
-`assets/fonts/` holds Source Serif 4 and Libre Franklin as variable TrueType files, each with its SIL Open Font License text. `assets/fonts.css` declares them as `IHD Source Serif 4` and `IHD Libre Franklin`, and `assets/theme.css` maps those names to the serif and sans roles. Both licenses allow embedding and redistribution when the license notice is kept, so finished internal documents may use these files directly.
-
-Change the pairing in `theme.css` and `fonts.css` together. Do not swap a family silently inside a single document.
-
-For a document, author semantic HTML containing exactly one `<!-- ihd:styles -->` marker in the head and one `<!-- ihd:reader -->` marker near the end of the body, then run:
-
-```sh
-python3 ~/.claude/skills/internal-html-design/scripts/inline.py input.html output.html --bundled-fonts
-```
-
-Every output embeds both families, adding about 1.9 MB of base64 to the page. Subsetting would shrink that, but this skill does not include a subsetting step.
-
-For other licensed fonts, pass `--font-css /absolute/path/to/font-faces.css` instead. That file defines the families and weights, using font files beneath its directory. The helper does not check licenses; that remains the author's responsibility.
-
-The helper inserts the canonical theme and reader, embeds referenced font bytes without conversion, and refuses to overwrite an existing output. It rejects external or remaining local rendering dependencies. It does not render Markdown, rewrite prose, fetch resources or publish anything. Inline other images and scripts before using it. Ordinary citation links are allowed. Validate any authored runtime offline as well; static dependency checks cannot prove arbitrary JavaScript never makes network requests.
-
-## Verification and reuse
-
-Open every result in a browser. Check actual font-face loading, mobile reflow, readable figure labels, light/dark contrast, focus visibility, controls, reduced motion and offline behavior. With JavaScript disabled, all sections, figure descriptions and baseline conclusions must remain accessible. Check that applying the system preserved supplied wording and any prior interactions.
-
-The bundled unit tests cover the inliner:
-
-```sh
-python3 -m unittest discover -s ~/.claude/skills/internal-html-design/tests -p 'test_*.py'
-```
-
-Browser checks are not bundled. Use the host's browser tooling and record what was checked.
-
-Invoke `/internal-html-design` together with the task that produces the document. The skill is manual only.
+See [visual recipes](visual-recipes.md) for layout choices, [the visual grammar](visual-grammar.md) for figures no recipe covers and [reading quality](reading-quality.md) for acceptance criteria. Existing classes and reader hooks remain usable. Previously delivered offline HTML does not change until deliberately repackaged.

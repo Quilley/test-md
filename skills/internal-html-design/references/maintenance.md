@@ -2,7 +2,7 @@
 
 ## Offline assembly
 
-Use exactly one `<!-- ihd:styles -->` marker in the head and one `<!-- ihd:reader -->` marker before authored scripts. Run `python3 scripts/inline.py source.html result.html` from this package. It embeds shared CSS, reader, four bundled WOFF2 faces and OFL notices, preserves authored content and refuses overwrite.
+Use exactly one `<!-- ihd:styles -->` marker in the head and one `<!-- ihd:reader -->` marker before authored scripts. Run `python3 scripts/inline.py source.html result.html` from this package. It embeds shared CSS, reader, four bundled WOFF2 faces and OFL notices, expands `data-ihd-chart` placeholders through `scripts/chart.py`, preserves authored content and refuses overwrite.
 
 For authorized custom faces, use `--font-css /absolute/fonts.css`. Define `IHD Serif`, `IHD Sans` and `IHD Mono` at their real weights/styles and include required notices. Local font URLs must stay beneath that CSS directory, use supported font formats and be at most 5MB per file. The legacy `--preview-fonts` flag remains an alias for the bundled fonts. Old custom family aliases remain fallbacks; trial fonts are not bundled.
 

@@ -27,7 +27,7 @@ This repository packages a set of collaborative planning skills for Claude Code,
 | `setup-matt-pocock-skills` | Configure the issue tracker, triage labels, and doc layout. Required by `to-spec`, `to-tickets`, `implement-spec`, `code-review`, and `wayfinder`. |
 | `triage` | Move issues and external PRs through triage roles, verify them, and write agent-ready briefs. Needs `setup-matt-pocock-skills`, `domain-modeling` and `grilling`. |
 | `improve-codebase-architecture` | Find deepening opportunities in a codebase, present them as an HTML report, then grill through the one you pick. Needs `codebase-design`, `domain-modeling` and `grilling`. |
-| `internal-html-design` | Present explanations, documentation, builds and landing pages as offline HTML, picture first, in Souvik's visual design. Self-contained, with a contents rail, a primitive kit for figures, and a layout audit. Manual only. |
+| `internal-html-design` | Present explanations, documentation, builds and landing pages as offline HTML, picture first, in Souvik's visual design. Self-contained, with a contents rail, a primitive kit, a chart builder that draws figures from data, and a layout audit. Manual only. |
 | `teach-bottom-up` | Teach a topic from its prerequisites, as a stepped page, a plain page, a Claude Doc, or chat. |
 | `start-repo` | Set up a repo for Claude Code, Codex and other AGENTS.md tools, with plan and ship folders and the hooks that keep them current. |
 

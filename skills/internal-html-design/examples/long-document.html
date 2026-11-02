@@ -628,6 +628,14 @@ svg .ihd-emph { stroke-width: 3.5; }
 .ihd-wide > .ihd-figure, .ihd-wide > .ihd-visual > .ihd-figure { max-width: none; }
 @media print { .ihd-doc { display: block; } }
 
+/* Chart builder additions. Ink-only: a quieter bar, a dashed connector, muted text. */
+.ihd-bar--quiet { background: var(--ihd-series-2); }
+svg .ihd-connector { fill: none; stroke: var(--ihd-series-3); stroke-width: 1.5; stroke-dasharray: 3 4; }
+svg .ihd-svg-muted { fill: var(--ihd-muted); }
+svg .ihd-line.ihd-emph { stroke-width: 5; }
+.ihd-diagram-small table { width: 100%; }
+.ihd-diagram-small th, .ihd-diagram-small td { padding: .7rem .3rem; font-size: .8125rem; }
+
 </style></head>
 <body><a class="ihd-skip" href="#content">Skip to content</a><div class="ihd-page"><div class="ihd-doc">
 <details class="ihd-toc"><summary>Contents</summary><nav aria-label="Contents"><ol><li><a href="#question">The question</a></li><li><a href="#mechanism">The mechanism</a></li><li><a href="#assumption">The assumption to test</a></li><li><a href="#glossary">Glossary</a></li><li><a href="#sources">Source notes</a></li></ol></nav></details>

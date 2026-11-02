@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sizing 10,000 agents from data</title>
+  <!-- ihd:styles -->
+</head>
+<body>
+  <a class="ihd-skip" href="#content">Skip to content</a>
+  <!-- Charts below are placeholders. inline.py draws each from its data; no coordinates are typed. -->
+  <svg class="ihd-sprite" width="0" height="0" aria-hidden="true" focusable="false">
+    <defs>
+      <marker id="ihd-arrow-closed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#191919"/></marker>
+      <marker id="ihd-arrow-open" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M1 1L9 5L1 9" fill="none" stroke="#191919" stroke-width="1.6"/></marker>
+      <marker id="ihd-arrow-bar" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M5 0V10" stroke="#191919" stroke-width="2"/></marker>
+      <pattern id="ihd-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V6" stroke="#191919" stroke-width="1"/></pattern>
+      <symbol id="ihd-m-circle" viewBox="-6 -6 12 12"><circle r="5"/></symbol>
+      <symbol id="ihd-m-square" viewBox="-6 -6 12 12"><rect x="-5" y="-5" width="10" height="10"/></symbol>
+      <symbol id="ihd-m-triangle" viewBox="-6 -6 12 12"><polygon points="0,-6 6,5 -6,5"/></symbol>
+      <symbol id="ihd-m-diamond" viewBox="-6 -6 12 12"><polygon points="0,-6 6,0 0,6 -6,0"/></symbol>
+      <symbol id="ihd-h-0" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+      <symbol id="ihd-h-1" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 12V2A10 10 0 0 1 22 12Z" fill="currentColor"/></symbol>
+      <symbol id="ihd-h-2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 12V2A10 10 0 0 1 12 22Z" fill="currentColor"/></symbol>
+      <symbol id="ihd-h-3" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 12V2A10 10 0 1 1 2 12Z" fill="currentColor"/></symbol>
+      <symbol id="ihd-h-4" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="currentColor" stroke="currentColor" stroke-width="1.5"/></symbol>
+    </defs>
+  </svg>
+  <div class="ihd-page">
+    <header class="ihd-masthead"><span class="ihd-mark">Internal working document · constructed example</span></header>
+    <main id="content">
+      <header class="ihd-hero">
+        <p class="ihd-eyebrow">Sizing</p>
+        <h1>What it costs to run 10,000 agents.</h1>
+        <p class="ihd-deck">Every figure here is drawn from data in the source. All numbers are invented for the example.</p>
+      </header>
+      <section class="ihd-section ihd-reading ihd-prose" aria-labelledby="limit">
+        <h2 id="limit">Memory sets the ceiling.</h2>
+        <p>Each node can run 64 agents on its processors and 54 on its network link, but only 30 before memory runs out. Adding processors changes nothing until memory moves.</p>
+        <div data-ihd-chart><script type="application/json">{"type": "bar", "title": "Agents one node can hold", "caption": "Memory binds at 30 agents per node. The other two limits are not the constraint.", "emph": "Memory", "unit": "agents", "items": [{"label": "Compute", "value": 64}, {"label": "Network", "value": 54}, {"label": "Memory", "value": 30}]}</script></div>
+      </section>
+      <section class="ihd-section ihd-reading ihd-prose" aria-labelledby="options">
+        <h2 id="options">A change in memory design lifts the ceiling.</h2>
+        <p>Right-sizing the memory each agent keeps raises the memory limit from 30 to 46. The processor and network limits are untouched, so the gain is real up to 54 agents.</p>
+        <div data-ihd-chart><script type="application/json">{"type": "grouped", "title": "Agents per node, before and after", "caption": "The memory limit rises from 30 to 46. Network at 54 is the next ceiling.", "categories": ["Compute", "Network", "Memory"], "series": [{"name": "Today", "values": [64, 54, 30]}, {"name": "After change", "values": [64, 54, 46]}], "max": 80, "unit": "agents"}</script></div>
+      </section>
+      <section class="ihd-section ihd-reading ihd-prose" aria-labelledby="range">
+        <h2 id="range">The bill is a range, not a number.</h2>
+        <p>Running 10,000 agents costs $41 thousand a month at the median assumption, and between $29 and $77 thousand across the cases we tried. The spread sits mostly in memory nodes and support.</p>
+        <div data-ihd-chart><script type="application/json">{"prefix": "$", "suffix": "k", "unit": "$ thousand a month", "type": "range", "title": "Monthly cost by part, low to high", "caption": "Memory nodes carry the widest spread, from $14 to $38 thousand.", "emph": "Memory nodes", "item_label": "Part", "items": [{"label": "Memory nodes", "low": 14, "base": 21, "high": 38}, {"label": "Compute", "low": 8, "base": 11, "high": 15}, {"label": "Network", "low": 5, "base": 6, "high": 9}, {"label": "Support and storage", "low": 2, "base": 3, "high": 15}]}</script></div>
+      </section>
+      <section class="ihd-section ihd-reading ihd-prose" aria-labelledby="parts">
+        <h2 id="parts">Where the three cases differ.</h2>
+        <p>The three cases share the same compute, but the high case spends far more on memory nodes and on other costs. Seeing the parts stacked shows which part makes the high case.</p>
+        <div data-ihd-chart><script type="application/json">{"prefix": "$", "suffix": "k", "unit": "$ thousand a month", "type": "stacked", "title": "Monthly cost by case and part", "caption": "Memory nodes make up most of the difference between the low and high cases.", "categories": ["Low", "Base", "High"], "category_label": "Case", "series": [{"name": "Compute", "values": [8, 11, 15]}, {"name": "Memory nodes", "values": [14, 21, 38]}, {"name": "Other", "values": [7, 9, 24]}]}</script></div>
+      </section>
+      <section class="ihd-section ihd-reading ihd-prose" aria-labelledby="scale">
+        <h2 id="scale">Cost climbs with the number of agents.</h2>
+        <p>Cost grows roughly in proportion to agents under every case. The cases fan out as the fleet grows, so an error in an assumption costs more at 10,000 than at 2,000.</p>
+        <div data-ihd-chart><script type="application/json">{"prefix": "$", "suffix": "k", "unit": "$ thousand a month", "type": "line", "title": "Monthly cost as the fleet grows", "caption": "The cases are $12 thousand apart at 2,000 agents and $48 thousand apart at 10,000.", "x": [2000, 4000, 6000, 8000, 10000], "x_label": "Agents", "y_label": "$ thousand a month", "emph": "Base", "series": [{"name": "Low assumptions", "values": [6, 12, 18, 24, 29]}, {"name": "Base", "values": [8, 16, 25, 33, 41]}, {"name": "High assumptions", "values": [15, 31, 46, 61, 77]}]}</script></div>
+      </section>
+      <section class="ihd-section ihd-reading ihd-prose" aria-labelledby="sensitivity">
+        <h2 id="sensitivity">Memory per agent moves the answer most.</h2>
+        <p>Each bar changes one assumption and holds the rest at the base case. The wider the bar, the more that assumption matters.</p>
+        <div data-ihd-chart><script type="application/json">{"prefix": "$", "suffix": "k", "unit": "$ thousand a month", "type": "tornado", "title": "What moves the monthly cost", "caption": "Memory per agent swings the cost by $32 thousand. Egress barely matters.", "base": 41, "item_label": "Assumption", "items": [{"label": "Memory per agent", "low": 31, "high": 63, "low_case": "at 2 GB", "high_case": "at 4 GB"}, {"label": "Peak concurrency", "low": 36, "high": 58, "low_case": "20% active", "high_case": "45% active"}, {"label": "Node price", "low": 37, "high": 47, "low_case": "$0.90 an hour", "high_case": "$1.30 an hour"}, {"label": "Egress", "low": 40, "high": 44, "low_case": "1 TB", "high_case": "3 TB"}]}</script></div>
+      </section>
+      <section class="ihd-section ihd-reading ihd-prose" aria-labelledby="plan">
+        <h2 id="plan">Four changes take the bill from $77 to $41 thousand.</h2>
+        <p>Starting from the high case, each change removes a share. Right-sizing memory is the largest, and cutting idle support and storage is next.</p>
+        <div data-ihd-chart><script type="application/json">{"prefix": "$", "suffix": "k", "unit": "$ thousand a month", "type": "waterfall", "title": "From the high case to the plan", "caption": "Right-sizing memory removes $17 thousand, the most of any step.", "item_label": "Step", "steps": [{"label": "High case", "value": 77, "kind": "total"}, {"label": "Right-size memory", "value": -17}, {"label": "Cut idle support and storage", "value": -12}, {"label": "Pack more agents per node", "value": -4}, {"label": "Reserved network", "value": -3}, {"label": "Planned bill", "value": 41, "kind": "total"}]}</script></div>
+      </section>
+      <section class="ihd-section ihd-reading ihd-prose" aria-labelledby="shift">
+        <h2 id="shift">Every part falls, memory furthest.</h2>
+        <p>Comparing each part before and after shows the same four changes by part. Memory nodes fall from $38 to $21 thousand and support from $15 to $3 thousand.</p>
+        <div data-ihd-chart><script type="application/json">{"prefix": "$", "suffix": "k", "unit": "$ thousand a month", "type": "slope", "title": "Cost by part, high case and plan", "caption": "All four parts fall. Memory nodes and support account for most of it.", "before_label": "High case", "after_label": "Plan", "emph": "Memory nodes", "item_label": "Part", "items": [{"label": "Memory nodes", "before": 38, "after": 21}, {"label": "Compute", "before": 15, "after": 11}, {"label": "Support and storage", "before": 15, "after": 3}, {"label": "Network", "before": 9, "after": 6}]}</script></div>
+      </section>
+      <section class="ihd-section ihd-reading ihd-prose" aria-labelledby="next">
+        <h2 id="next">Test the uncertain, high-impact assumptions first.</h2>
+        <p>Impact is the swing from the sensitivity chart. Uncertainty is how sure we are of the value, from 1 to 10. The top right is where a test pays for itself.</p>
+        <div data-ihd-chart><script type="application/json">{"type": "matrix", "title": "Which assumption to test first", "caption": "Memory per agent and peak concurrency are both large and uncertain: test them first.", "x_label": "Uncertainty (1 to 10)", "y_label": "Swing in monthly cost", "y_format": {"prefix": "$", "suffix": "k"}, "mid_x": 5, "mid_y": 16, "emph": "Memory per agent", "item_label": "Assumption", "quadrants": {"tl": "Check once", "tr": "Test first", "bl": "Leave alone", "br": "Watch"}, "points": [{"label": "Memory per agent", "x": 8, "y": 32}, {"label": "Peak concurrency", "x": 6, "y": 22}, {"label": "Node price", "x": 2, "y": 10}, {"label": "Egress", "x": 3, "y": 4}]}</script></div>
+      </section>
+    </main>
+    <footer class="ihd-footer"><span>Constructed example</span></footer>
+  </div>
+  <!-- ihd:reader -->
+</body>
+</html>

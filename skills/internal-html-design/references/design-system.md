@@ -47,6 +47,7 @@ Essential figure labels must render at least 14px after scaling. A 16px label on
 | `.ihd-number` | Explicit monospaced numerical cells; ordinary table cells use sans text |
 | `.ihd-toc`, `.ihd-glossary`, `.ihd-footnotes` | Optional contents, definitions and source navigation. Inside `.ihd-doc` (contents first, then `main`) the contents become a sticky left rail from 80rem and an ordinary disclosure below it |
 | `.ihd-s1`–`.ihd-s3`, `.ihd-line`, `.ihd-edge`, `.ihd-shape`, `.ihd-hatch`, `.ihd-ball`, `.ihd-pin` | The primitive kit; see [the visual grammar](visual-grammar.md) |
+| `data-ihd-chart` placeholder | A chart drawn from data by `scripts/chart.py` at assembly: bar, grouped, stacked, line, range, tornado, waterfall, slope, scatter, matrix. See [visual recipes](visual-recipes.md#charts-from-data) |
 | `.ihd-stockflow`, `.ihd-capacity`, `.ihd-swim`, `.ihd-callout` | Recipes for what builds up, which step limits, who does what and the parts of one thing |
 | `.ihd-note`, `.ihd-disclosure`, `.ihd-margin-note` | Qualifications and optional depth; conclusions remain outside disclosures |
 | `.ihd-controls`, `.ihd-result` | Labeled native controls and a complete static baseline |

@@ -8,7 +8,7 @@ const { chromium } = require('playwright');
 
 const root = path.resolve(__dirname, '..');
 const output = fs.mkdtempSync(path.join(os.tmpdir(), 'ihd-browser-check-'));
-const examples = ['visual-essay', 'evidence-report', 'guided-explainer', 'landing', 'component-catalogue', 'visual-toolkit', 'long-document', 'system-explainer'];
+const examples = ['visual-essay', 'evidence-report', 'guided-explainer', 'landing', 'component-catalogue', 'visual-toolkit', 'long-document', 'system-explainer', 'data-charts'];
 const { measurePage } = require('../scripts/audit_layout.cjs');
 
 async function loadFonts(page) {

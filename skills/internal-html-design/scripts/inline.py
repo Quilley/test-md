@@ -3,10 +3,14 @@
 import argparse
 import base64
 from html.parser import HTMLParser
+import importlib.util
 from pathlib import Path
 import re
 
 ROOT = Path(__file__).resolve().parents[1]
+_SPEC = importlib.util.spec_from_file_location('ihd_chart', Path(__file__).resolve().with_name('chart.py'))
+chart = importlib.util.module_from_spec(_SPEC)
+_SPEC.loader.exec_module(chart)
 URL = re.compile(r'url\(\s*[\'"]?([^\'"\)]+)[\'"]?\s*\)', re.I)
 
 
@@ -55,6 +59,7 @@ class OfflineDependencies(HTMLParser):
 
 
 def assemble(source, faces=None, preview=False):
+    source = chart.expand(source)
     for marker in ('<!-- ihd:styles -->', '<!-- ihd:reader -->'):
         if source.count(marker) != 1:
             raise ValueError(f'Input must contain exactly one {marker}')
@@ -92,7 +97,7 @@ def main():
         output = assemble(args.input.read_text(), faces, args.preview_fonts)
         with args.output.open('x') as target:
             target.write(output)
-    except (OSError, ValueError) as error:
+    except (OSError, ValueError) as error:  # chart.ChartError is a ValueError
         parser.exit(1, f'{error}\n')
     print(args.output.resolve())
 

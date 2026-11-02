@@ -332,3 +332,11 @@ svg .ihd-emph { stroke-width: 3.5; }
 .ihd-toc a[aria-current='location']::before { content: ''; position: absolute; left: 0; top: 1.05em; width: .4rem; height: .4rem; background: var(--ihd-ink); }
 .ihd-wide > .ihd-figure, .ihd-wide > .ihd-visual > .ihd-figure { max-width: none; }
 @media print { .ihd-doc { display: block; } }
+
+/* Chart builder additions. Ink-only: a quieter bar, a dashed connector, muted text. */
+.ihd-bar--quiet { background: var(--ihd-series-2); }
+svg .ihd-connector { fill: none; stroke: var(--ihd-series-3); stroke-width: 1.5; stroke-dasharray: 3 4; }
+svg .ihd-svg-muted { fill: var(--ihd-muted); }
+svg .ihd-line.ihd-emph { stroke-width: 5; }
+.ihd-diagram-small table { width: 100%; }
+.ihd-diagram-small th, .ihd-diagram-small td { padding: .7rem .3rem; font-size: .8125rem; }

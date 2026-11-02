@@ -6,7 +6,7 @@ Start with the reader's question. Choose a process for order, a swimlane for who
 
 Prefer wrapping HTML for text-heavy nodes and comparisons. Use inline SVG when geometry conveys meaning. Canvas is an optional choice for genuinely dense or dynamic geometry; provide an equivalent static explanation and accessible values. No chart library or remote rendering dependency is required by this skill.
 
-The [toolkit source](../examples/source/visual-toolkit.html) demonstrates branches, bars, a line chart with a narrow table alternative, and a dated timeline. The [catalogue](../examples/source/component-catalogue.html) demonstrates a process and controls.
+Draw anything made of numbers with the chart builder below; do not type coordinates. The [toolkit source](../examples/source/visual-toolkit.html) demonstrates branches, bars, a line chart with a narrow table alternative, and a dated timeline. The [catalogue](../examples/source/component-catalogue.html) demonstrates a process and controls.
 
 ## Processes and branches
 
@@ -43,6 +43,35 @@ A timeline earns its axis through dates or meaningful intervals. An empty month 
 ```
 
 Keep captions compact: state the takeaway and essential qualification, and put longer method explanations in adjacent prose. Keep implementation language out of captions. Explain what to notice and what the marks support. A short interaction hint can say “Scroll for later dates”; it need not describe a focusable frame or page overflow policy.
+
+## Charts from data
+
+Write the data and a chart type; `inline.py` draws the figure. The builder computes the scale, ticks, marker positions and label positions, writes a text table that replaces the chart in a narrow container and in print, and refuses anything that breaks the visual-grammar invariants. Copy the sprite from `assets/starter.html` first.
+
+```html
+<div data-ihd-chart><script type="application/json">
+{"type": "range", "title": "Monthly cost by part", "caption": "Memory nodes carry the widest spread.",
+ "prefix": "$", "suffix": "k", "unit": "$ thousand a month", "emph": "Memory nodes",
+ "items": [{"label": "Memory nodes", "low": 14, "base": 21, "high": 38}]}
+</script></div>
+```
+
+Every chart needs `type`, `title` and `caption` (what to notice). Optional on all: `prefix`, `suffix`, `unit` (axis note), `emph` (the one label or series that takes the darkest tone and heaviest stroke), `description` (the accessible description; written from the data when omitted), `item_label` or `category_label` (first column of the table). Run `python3 scripts/chart.py spec.json` to print a single figure for pasting and hand editing.
+
+| Type | Use it for | Data |
+| --- | --- | --- |
+| `bar` | How much, on one scale | `items: [{label, value, assumed?}]`, optional `max` |
+| `grouped` | One quantity per category, up to three series | `categories`, `series: [{name, values}]`, optional `max` |
+| `stacked` | Parts of a whole per category, up to three parts | `categories`, `series: [{name, values}]` |
+| `line` | Change along an ordered axis, up to three series | `x`, `series`, optional `x_label`, `y_label`, `zero` |
+| `range` | A low, base and high per item | `items: [{label, low, base, high}]` |
+| `tornado` | Which assumption moves the answer most | `base`, `items: [{label, low, high, low_case?, high_case?}]`, sorted by swing |
+| `waterfall` | A total built from steps | `steps: [{label, value, kind?}]`; the first step and any `"kind": "total"` are totals and must match the running sum |
+| `slope` | Before and after, up to nine items | `items: [{label, before, after}]`, `before_label`, `after_label` |
+| `scatter` | Position on two measures, up to twelve points | `points: [{label, x, y}]`, `x_label`, `y_label`, `x_format`, `y_format` |
+| `matrix` | A scatter with named quadrants | as `scatter` plus `quadrants: {tl, tr, bl, br}`, `mid_x`, `mid_y` |
+
+More than three series is an error: split into several charts on one shared `max`. A label that would collide is an error: shorten it, spread the points or drop one. Bars start at zero; use `range` or `waterfall` for values that can be negative. Write the case that produced each end of a tornado bar in `low_case` and `high_case`, so the reader sees the input and not only the result. A chart that fits none of these is a hand-drawn figure: read [the visual grammar](visual-grammar.md). The [data charts example](../examples/source/data-charts.html) shows every type in a sizing story.
 
 ## Tables and exact values
 

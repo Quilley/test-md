@@ -95,6 +95,15 @@ async function measurePage(page) {
     for (const fig of [...document.querySelectorAll('figure')].filter(visible)) {
       if (!fig.querySelector('figcaption, caption')) findings.push({kind:'figure-without-caption', text:describe(fig)});
     }
+    // A wide diagram needs its equivalent narrow composition (a table for charts); a section of long prose with no picture is worth a second look.
+    for (const svg of document.querySelectorAll('svg.ihd-diagram-wide'))
+      if (!svg.parentElement.querySelector(':scope > .ihd-diagram-small')) failures.push({kind:'diagram-without-narrow-alternative', text:describe(svg)});
+    const picture = 'figure, table, svg:not(.ihd-sprite), .ihd-swim, .ihd-stockflow, .ihd-capacity, .ihd-callout, .ihd-bar-row, .ihd-flow, .ihd-split';
+    for (const section of [...document.querySelectorAll('main section')].filter(visible)) {
+      if (section.parentElement.closest('section')) continue;
+      const count = (section.innerText.match(/\S+/g) || []).length;
+      if (count > 250 && !section.querySelector(picture)) findings.push({kind:'prose-section-without-figure', words:count, text:describe(section)});
+    }
     const offInk = new Map();
     for (const el of [...document.querySelectorAll('body *')].filter(visible)) {
       const c = getComputedStyle(el);

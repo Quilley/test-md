@@ -86,48 +86,7 @@
         <section class="ihd-section ihd-reading ihd-prose" aria-labelledby="growth">
           <h2 id="growth">Unfinished work grows by the gap.</h2>
           <p>With handoff at 4 a minute, nothing builds up at 4 arrivals. At 6, two extra orders join each minute. At 8, four do.</p>
-          <div class="ihd-visual">
-            <figure class="ihd-figure">
-              <p class="ihd-figure-title">Unfinished orders over ten minutes</p>
-              <div class="ihd-diagram-wide">
-                <svg viewBox="0 0 640 380" role="img" aria-labelledby="growth-title growth-desc">
-                  <title id="growth-title">Unfinished orders over ten minutes for three arrival rates</title>
-                  <desc id="growth-desc">Four arrivals a minute stays at zero. Six a minute rises to 20 at minute 10. Eight a minute rises to 40 at minute 10.</desc>
-                  <path class="ihd-axis" d="M60 40V320H470"/>
-                  <g class="ihd-chart-value">
-                    <text x="48" y="325" text-anchor="end">0</text><text x="48" y="255" text-anchor="end">10</text><text x="48" y="185" text-anchor="end">20</text><text x="48" y="115" text-anchor="end">30</text><text x="48" y="45" text-anchor="end">40</text>
-                    <text x="60" y="350" text-anchor="middle">0</text><text x="142" y="350" text-anchor="middle">2</text><text x="224" y="350" text-anchor="middle">4</text><text x="306" y="350" text-anchor="middle">6</text><text x="388" y="350" text-anchor="middle">8</text><text x="470" y="350" text-anchor="middle">10</text>
-                  </g>
-                  <text class="ihd-chart-label" x="60" y="24">Unfinished orders</text>
-                  <text class="ihd-chart-label" x="265" y="376" text-anchor="middle">Minutes</text>
-                  <polyline class="ihd-line ihd-s1" points="60,320 470,320"/>
-                  <polyline class="ihd-line ihd-dash ihd-s2" points="60,320 142,292 224,264 306,236 388,208 470,180"/>
-                  <polyline class="ihd-line ihd-dot ihd-s3" points="60,320 142,264 224,208 306,152 388,96 470,40"/>
-                  <g class="ihd-s1"><use href="#ihd-m-circle" x="54" y="314" width="12" height="12"/><use href="#ihd-m-circle" x="136" y="314" width="12" height="12"/><use href="#ihd-m-circle" x="218" y="314" width="12" height="12"/><use href="#ihd-m-circle" x="300" y="314" width="12" height="12"/><use href="#ihd-m-circle" x="382" y="314" width="12" height="12"/><use href="#ihd-m-circle" x="464" y="314" width="12" height="12"/></g>
-                  <g class="ihd-s2"><use href="#ihd-m-square" x="54" y="314" width="12" height="12"/><use href="#ihd-m-square" x="136" y="286" width="12" height="12"/><use href="#ihd-m-square" x="218" y="258" width="12" height="12"/><use href="#ihd-m-square" x="300" y="230" width="12" height="12"/><use href="#ihd-m-square" x="382" y="202" width="12" height="12"/><use href="#ihd-m-square" x="464" y="174" width="12" height="12"/></g>
-                  <g class="ihd-s3"><use href="#ihd-m-triangle" x="54" y="314" width="12" height="12"/><use href="#ihd-m-triangle" x="136" y="258" width="12" height="12"/><use href="#ihd-m-triangle" x="218" y="202" width="12" height="12"/><use href="#ihd-m-triangle" x="300" y="146" width="12" height="12"/><use href="#ihd-m-triangle" x="382" y="90" width="12" height="12"/><use href="#ihd-m-triangle" x="464" y="34" width="12" height="12"/></g>
-                  <text class="ihd-chart-label" x="482" y="326">4 a minute: none</text>
-                  <text class="ihd-chart-label" x="482" y="184">6 a minute: +2</text>
-                  <text class="ihd-chart-label" x="482" y="44">8 a minute: +4</text>
-                </svg>
-              </div>
-              <div class="ihd-diagram-small">
-                <table>
-                  <caption>Unfinished orders by minute, the same data as the chart</caption>
-                  <thead><tr><th scope="col">Minute</th><th scope="col">4 a minute</th><th scope="col">6 a minute</th><th scope="col">8 a minute</th></tr></thead>
-                  <tbody>
-                    <tr><th scope="row">0</th><td class="ihd-number">0</td><td class="ihd-number">0</td><td class="ihd-number">0</td></tr>
-                    <tr><th scope="row">2</th><td class="ihd-number">0</td><td class="ihd-number">4</td><td class="ihd-number">8</td></tr>
-                    <tr><th scope="row">4</th><td class="ihd-number">0</td><td class="ihd-number">8</td><td class="ihd-number">16</td></tr>
-                    <tr><th scope="row">6</th><td class="ihd-number">0</td><td class="ihd-number">12</td><td class="ihd-number">24</td></tr>
-                    <tr><th scope="row">8</th><td class="ihd-number">0</td><td class="ihd-number">16</td><td class="ihd-number">32</td></tr>
-                    <tr><th scope="row">10</th><td class="ihd-number">0</td><td class="ihd-number">20</td><td class="ihd-number">40</td></tr>
-                  </tbody>
-                </table>
-              </div>
-              <figcaption>Each line has its own dash, marker and label, so no series depends on shade alone. Handoff capacity is 4 a minute with constant rates and no lost orders.</figcaption>
-            </figure>
-          </div>
+          <div data-ihd-chart><script type="application/json">{"type": "line", "title": "Unfinished orders over ten minutes", "caption": "Each line has its own dash, marker and label, so no series depends on shade alone. Handoff capacity is 4 a minute with constant rates and no lost orders.", "description": "Four arrivals a minute stays at zero. Six a minute rises to 20 at minute 10. Eight a minute rises to 40 at minute 10.", "x": [0, 2, 4, 6, 8, 10], "x_label": "Minutes", "y_label": "Unfinished orders", "series": [{"name": "4 a minute", "values": [0, 0, 0, 0, 0, 0]}, {"name": "6 a minute", "values": [0, 4, 8, 12, 16, 20]}, {"name": "8 a minute", "values": [0, 8, 16, 24, 32, 40]}]}</script></div>
         </section>
 
         <section class="ihd-section" aria-labelledby="process">

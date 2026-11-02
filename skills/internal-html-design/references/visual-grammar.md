@@ -12,13 +12,13 @@ Before drawing, write one line: what the reader should be able to answer, and wh
 | Something builds up | Stock and flow; a line when the path over time matters | `.ihd-stockflow`; `.ihd-line` |
 | How much, on one scale | Bars; capacity bars when one step limits the rest | `.ihd-bar-row`; `.ihd-capacity` |
 | Options against criteria | Native table with rating balls | `.ihd-ball` in a table |
-| Position on two axes | 2x2 or scatter: two axes, labelled quadrants, marker shapes | `.ihd-axis`, markers |
+| Position on two axes | 2x2 or scatter: two axes, labelled quadrants, marker shapes | `matrix` or `scatter` chart ([charts from data](visual-recipes.md#charts-from-data)) |
 | What depends on what | Shapes and edges, at most seven nodes per figure | `.ihd-shape`, `.ihd-edge` |
 | Feedback | Edges that return to their source; polarity written on each edge | solid and open arrowheads |
 | Parts of one thing | A figure with numbered pins and a key | `.ihd-callout` |
 | Dated events | Timeline with a real scale | see visual recipes |
 
-There is no template for a 2x2, a network or a loop. Compose them from the kit and check them against the invariants below.
+Anything made of numbers (bars, lines, ranges, sensitivity, waterfalls, scatter, 2x2) comes from the chart builder, which computes the geometry. There is no template for a network or a loop. Compose those from the kit and check them against the invariants below.
 
 ## Invariants
 
